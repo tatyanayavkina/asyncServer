@@ -31,16 +31,12 @@ public class AsyncTcpServer {
 
     public void start() {
         try{
-
             bindAddress();
             accept();
-
         } catch ( IOException ex ){
             System.out.println("IOException");
-        } finally {
             stop();
         }
-
     }
     public void stop(){
         group.shutdown();

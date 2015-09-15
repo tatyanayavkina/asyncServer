@@ -17,8 +17,8 @@ public class AsyncServerClientState {
     private AsyncServerClientState(final int instance)
     {
         this.instance = instance;
-        this.readBuffer = ByteBuffer.allocate(4);
-        this.writeBuffer = ByteBuffer.allocate(4);
+        this.readBuffer = ByteBuffer.allocate(32);
+        this.writeBuffer = ByteBuffer.allocate(32);
     }
 
     public static AsyncServerClientState newInstance()
