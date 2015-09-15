@@ -25,6 +25,6 @@ public class AsyncServerAcceptHandler implements CompletionHandler<AsynchronousS
 
     @Override
     public void failed( Throwable exc, AsyncServerClientState clientState ) {
-
+        System.out.println("Error while accepting client: " + exc.toString());
     }
 }
