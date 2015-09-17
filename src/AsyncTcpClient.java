@@ -25,6 +25,8 @@ public class AsyncTcpClient {
     private void connect(){
         AsyncServerClientState clientState = AsyncServerClientState.newInstance();
         clientState.initChannel(channel);
+        // временная мера
+        clientState.writeInt(5);
         channel.connect(new InetSocketAddress(host, port), clientState, new AsyncClientConnectionHandler());
     }
 }

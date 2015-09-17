@@ -9,6 +9,7 @@ public class AsyncClientWriteHandler implements CompletionHandler<Integer, Async
         if ( clientState.getWriteBuffer().hasRemaining() ) {
             clientState.getChannel().write( clientState.getWriteBuffer(), clientState, this );
         }
+
         clientState.getChannel().read( clientState.getReadBuffer(), clientState, new AsyncClientReadHandler());
     }
 

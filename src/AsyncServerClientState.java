@@ -55,5 +55,6 @@ public class AsyncServerClientState {
     public void writeInt (int number){
         writeBuffer.clear();
         writeBuffer.putInt(number);
+        writeBuffer.flip();
     }
 }

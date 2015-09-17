@@ -29,6 +29,7 @@ public class AsyncServerReadHandler implements CompletionHandler<Integer, AsyncS
         rb.flip();
 
         int receivedNo = rb.getInt();
+        System.out.println("received = " + receivedNo);
         rb.flip();
 
         ByteBuffer wb = clientState.getWriteBuffer();
