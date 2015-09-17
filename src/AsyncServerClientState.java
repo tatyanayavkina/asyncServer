@@ -17,8 +17,8 @@ public class AsyncServerClientState {
     private AsyncServerClientState(final int instance)
     {
         this.instance = instance;
-        this.readBuffer = ByteBuffer.allocate(32);
-        this.writeBuffer = ByteBuffer.allocate(32);
+        this.readBuffer = ByteBuffer.allocate(4);
+        this.writeBuffer = ByteBuffer.allocate(4);
     }
 
     public static AsyncServerClientState newInstance()
@@ -50,5 +50,10 @@ public class AsyncServerClientState {
     public int getInstance()
     {
         return instance;
+    }
+
+    public void writeInt (int number){
+        writeBuffer.clear();
+        writeBuffer.putInt(number);
     }
 }

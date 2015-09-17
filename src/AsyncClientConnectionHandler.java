@@ -7,7 +7,7 @@ public class AsyncClientConnectionHandler implements CompletionHandler<Void,Asyn
 
     @Override
     public void completed(Void result, AsyncServerClientState clientState) {
-        clientState.getChannel().write(clientState.getWriteBuffer(), clientState, AsyncClientWriteHandler());
+        clientState.getChannel().write(clientState.getWriteBuffer(), clientState, new AsyncClientWriteHandler());
     }
 
     @Override
