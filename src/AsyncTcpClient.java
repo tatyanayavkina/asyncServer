@@ -22,7 +22,7 @@ public class AsyncTcpClient {
         this.connectionHandler = new AsyncClientConnectionHandler();
     }
 
-    private void connect(){
+    public void connect(){
         AsyncServerClientState clientState = AsyncServerClientState.newInstance();
         clientState.initChannel(channel);
         // временная мера
