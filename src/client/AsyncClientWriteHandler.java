@@ -1,3 +1,7 @@
+package client;
+
+import server.AsyncServerClientState;
+
 import java.nio.channels.CompletionHandler;
 
 /**

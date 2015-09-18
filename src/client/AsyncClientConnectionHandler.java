@@ -1,9 +1,13 @@
+package client;
+
+import server.AsyncServerClientState;
+
 import java.nio.channels.CompletionHandler;
 
 /**
  * Created on 15.09.2015.
  */
-public class AsyncClientConnectionHandler implements CompletionHandler<Void,AsyncServerClientState>{
+public class AsyncClientConnectionHandler implements CompletionHandler<Void, AsyncServerClientState>{
 
     @Override
     public void completed(Void result, AsyncServerClientState clientState) {

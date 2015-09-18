@@ -1,3 +1,7 @@
+package client;
+
+import server.AsyncServerClientState;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.AsynchronousChannelGroup;
@@ -12,14 +16,12 @@ public class AsyncTcpClient {
     private final String host;
     private final AsynchronousChannelGroup group;
     private final AsynchronousSocketChannel channel;
-    private final AsyncClientConnectionHandler connectionHandler;
 
     public AsyncTcpClient(String host, int port) throws IOException{
         this.host = host;
         this.port = port;
         this.group = AsynchronousChannelGroup.withFixedThreadPool(3, Executors.defaultThreadFactory());
         this.channel = AsynchronousSocketChannel.open(this.group);
-        this.connectionHandler = new AsyncClientConnectionHandler();
     }
 
     public void connect(){
