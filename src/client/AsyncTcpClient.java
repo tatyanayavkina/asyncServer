@@ -31,4 +31,8 @@ public class AsyncTcpClient {
         clientState.writeInt(5);
         channel.connect(new InetSocketAddress(host, port), clientState, new AsyncClientConnectionHandler());
     }
+
+    public void close(){
+
+    }
 }

@@ -23,6 +23,13 @@ public class AsyncServerClientState {
         this.writeBuffer = ByteBuffer.allocate(4);
     }
 
+    public AsyncServerClientState(AsynchronousSocketChannel asc, ByteBuffer readBuffer, ByteBuffer writeBuffer){
+        this.instance = 1;
+        this.channel = asc;
+        this.readBuffer = readBuffer;
+        this.writeBuffer = writeBuffer;
+    }
+
     public static AsyncServerClientState newInstance()
     {
         return new AsyncServerClientState(counter.getAndIncrement());
