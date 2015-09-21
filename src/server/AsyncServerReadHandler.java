@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.CompletionHandler;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created on 15.09.2015.
@@ -13,38 +14,43 @@ public class AsyncServerReadHandler implements CompletionHandler<Integer, AsyncS
     public void completed(Integer result, AsyncServerClientState clientState){
         if (result == -1)
         {
-            try
-            {
+            try {
                 clientState.getChannel().close();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return;
         }
 
-        ByteBuffer rb = clientState.getReadBuffer();
-        if (rb.hasRemaining())
-            clientState.getChannel().read(clientState.getReadBuffer(), clientState, this);
+        ByteBuffer readSizeBuffer = clientState.getReadSizeBuffer();
 
-        rb.flip();
+        if (clientState.getReadBuffer() == null) {
+            if (readSizeBuffer.hasRemaining())
+                clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, this );
 
-        int receivedNo = rb.getInt();
-        System.out.println("received = " + receivedNo);
-        rb.flip();
+            readSizeBuffer.flip();
+            int size = readSizeBuffer.getInt();
+            System.out.println("Received " + size + " bytes");
 
-        ByteBuffer wb = clientState.getWriteBuffer();
-        wb.clear();
-        wb.putInt(receivedNo * 2);
-        wb.flip();
+            ByteBuffer rBuffer = ByteBuffer.allocate(size);
+            clientState.setReadBuffer(rBuffer);
 
-        // write answer
-        clientState.getChannel().write(wb, clientState, writeHandler);
+            clientState.getChannel().read( clientState.getReadBuffer(), clientState, this );
+        } else {
+            ByteBuffer readBuffer = clientState.getReadBuffer();
+            if (readBuffer.hasRemaining())
+                clientState.getChannel().read( clientState.getReadBuffer(), clientState, this );
 
-        // read next
-        rb.clear();
-        clientState.getChannel().read(clientState.getReadBuffer(), clientState, this);
+            readBuffer.flip();
+            byte[] readBytes = readBuffer.array();
+
+            String str = new String( readBytes, StandardCharsets.UTF_8 );
+            System.out.println(str);
+
+            readSizeBuffer.clear();
+            clientState.deleteReadBuffer();
+            clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, this );
+        }
     }
 
     public void failed(Throwable ex, AsyncServerClientState clientState){

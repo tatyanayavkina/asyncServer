@@ -20,16 +20,13 @@ public class AsyncTcpClient {
     public AsyncTcpClient(String host, int port) throws IOException{
         this.host = host;
         this.port = port;
-        this.group = AsynchronousChannelGroup.withFixedThreadPool(3, Executors.defaultThreadFactory());
+        this.group = AsynchronousChannelGroup.withFixedThreadPool(2, Executors.defaultThreadFactory());
         this.channel = AsynchronousSocketChannel.open(this.group);
     }
 
     public void connect(){
-        AsyncServerClientState clientState = AsyncServerClientState.newInstance();
-        clientState.initChannel(channel);
-        // временная мера
-        clientState.writeInt(5);
-        channel.connect(new InetSocketAddress(host, port), clientState, new AsyncClientConnectionHandler());
+        AsyncServerClientState clientState = new AsyncServerClientState( channel );
+        channel.connect(new InetSocketAddress(host, port), clientState, new AsyncClientConnectionHandler(this) );
     }
 
     public void close(){

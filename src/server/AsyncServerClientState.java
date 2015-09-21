@@ -11,23 +11,22 @@ public class AsyncServerClientState {
     private static final AtomicInteger counter = new AtomicInteger();
 
     private final int instance;
-    private final ByteBuffer readBuffer;
-    private final ByteBuffer writeBuffer;
+    private final ByteBuffer readSizeBuffer;
+    private ByteBuffer readBuffer;
+    private ByteBuffer writeBuffer;
 
     private AsynchronousSocketChannel channel;
 
     private AsyncServerClientState(final int instance)
     {
         this.instance = instance;
-        this.readBuffer = ByteBuffer.allocate(4);
-        this.writeBuffer = ByteBuffer.allocate(4);
+        this.readSizeBuffer = ByteBuffer.allocate(4);
     }
 
-    public AsyncServerClientState(AsynchronousSocketChannel asc, ByteBuffer readBuffer, ByteBuffer writeBuffer){
+    public AsyncServerClientState(AsynchronousSocketChannel asc){
         this.instance = 1;
         this.channel = asc;
-        this.readBuffer = readBuffer;
-        this.writeBuffer = writeBuffer;
+        this.readSizeBuffer = ByteBuffer.allocate(4);
     }
 
     public static AsyncServerClientState newInstance()
@@ -39,6 +38,18 @@ public class AsyncServerClientState {
     {
         this.channel = asc;
         return this;
+    }
+
+    public void setReadBuffer(ByteBuffer readBuffer){
+        this.readBuffer = readBuffer;
+    }
+
+    public void deleteReadBuffer(){
+        this.readBuffer = null;
+    }
+
+    public void setWriteBuffer(ByteBuffer writeBuffer){
+        this.writeBuffer = writeBuffer;
     }
 
     public AsynchronousSocketChannel getChannel()
@@ -61,9 +72,7 @@ public class AsyncServerClientState {
         return instance;
     }
 
-    public void writeInt (int number){
-        writeBuffer.clear();
-        writeBuffer.putInt(number);
-        writeBuffer.flip();
+    public ByteBuffer getReadSizeBuffer(){
+        return readSizeBuffer;
     }
 }
