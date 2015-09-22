@@ -30,7 +30,7 @@ public class AsyncTcpServer {
     }
 
     private void accept(){
-        serverChannel.accept(AsyncServerClientState.newInstance(), new AsyncServerAcceptHandler(serverChannel));
+        serverChannel.accept(AsyncServerClientState.newInstance(), new AsyncServerAcceptHandler( serverChannel, serverProcessor ) );
     }
 
     public void start() {

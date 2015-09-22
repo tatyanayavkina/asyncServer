@@ -22,6 +22,21 @@ public class ServerProcessor {
         this.tcpServer = new AsyncTcpServer(this, config.getHost(), config.getPort(), config.getThreadCount());
     }
 
+    public void storeMessage( String message ){
+        synchronized ( messageList ){
+            if ( messageList.size() == messageStoreLimit ){
+                messageList.remove(0);
+            }
+
+            messageList.add( message );
+        }
+    }
+
+    public void handleInputMessage(AsyncServerClientState clientState){
+        AsyncServerReadHandler readHandler = new AsyncServerReadHandler();
+        clientState.getChannel().read(clientState.getReadSizeBuffer(), clientState, readHandler);
+    }
+
     public void start(){
         tcpServer.start();
     }

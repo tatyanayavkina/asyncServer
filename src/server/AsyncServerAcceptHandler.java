@@ -8,10 +8,12 @@ import java.nio.channels.CompletionHandler;
  * Created on 15.09.2015.
  */
 public class AsyncServerAcceptHandler implements CompletionHandler<AsynchronousSocketChannel, AsyncServerClientState> {
+    private final ServerProcessor serverProcessor;
     private final AsynchronousServerSocketChannel serverChannel;
     private final AsyncServerReadHandler readHandler ;
 
-    public AsyncServerAcceptHandler( AsynchronousServerSocketChannel serverChannel ) {
+    public AsyncServerAcceptHandler( AsynchronousServerSocketChannel serverChannel, ServerProcessor serverProcessor ) {
+        this.serverProcessor = serverProcessor;
         this.serverChannel = serverChannel;
         this.readHandler = new AsyncServerReadHandler();
     }
@@ -20,9 +22,10 @@ public class AsyncServerAcceptHandler implements CompletionHandler<AsynchronousS
     public void completed( AsynchronousSocketChannel channel,  AsyncServerClientState clientState ) {
         // accept next connection
         serverChannel.accept(AsyncServerClientState.newInstance(), this);
-        // handle this connection
+        // init channel
         clientState.initChannel(channel);
-        channel.read(clientState.getReadSizeBuffer(), clientState, readHandler);
+        // handle this connection
+        serverProcessor.handleInputMessage( clientState );
     }
 
     @Override
