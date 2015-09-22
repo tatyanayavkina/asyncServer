@@ -21,4 +21,8 @@ public class ServerProcessor {
         this.messageList = new ArrayList<String>(messageStoreLimit);
         this.tcpServer = new AsyncTcpServer(this, config.getHost(), config.getPort(), config.getThreadCount());
     }
+
+    public void start(){
+        tcpServer.start();
+    }
 }

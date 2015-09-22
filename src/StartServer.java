@@ -1,6 +1,10 @@
-import server.AsyncTcpServer;
+
+import server.ServerProcessor;
+import utils.Config;
+import utils.XMLReader;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Created on 15.09.2015.
@@ -8,11 +12,15 @@ import java.io.IOException;
 public class StartServer {
 
     public static void main(String[] args) {
-        try {
-            AsyncTcpServer asyncServer = new AsyncTcpServer(9999, 10);
-            asyncServer.start();
+        Config config = XMLReader.readParams();
+        HashMap<String, String> users = XMLReader.readUsers();
+
+        try{
+            ServerProcessor ServerProcessor = new ServerProcessor(config, users);
+            ServerProcessor.start();
         } catch (IOException e){
-            e.printStackTrace();
+
         }
+
     }
 }
