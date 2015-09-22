@@ -1,9 +1,12 @@
 package server;
 
+import utils.ConnectionAutoIncrementMap;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 /**
@@ -15,13 +18,15 @@ public class AsyncTcpServer {
     private final int port;
     private final AsynchronousChannelGroup group;
     private final AsynchronousServerSocketChannel serverChannel;
+    private final ConnectionAutoIncrementMap connectionsMap;
 
     public AsyncTcpServer( ServerProcessor serverProcessor, String host, int port, int threadCount ) throws IOException {
         this.serverProcessor = serverProcessor;
         this.host = host;
         this.port = port;
         this.group = AsynchronousChannelGroup.withFixedThreadPool( threadCount, Executors.defaultThreadFactory() );
-        this.serverChannel = AsynchronousServerSocketChannel.open( this.group );
+        this.serverChannel = AsynchronousServerSocketChannel.open(this.group);
+        this.connectionsMap = new ConnectionAutoIncrementMap();
     }
 
     private void bindAddress() throws IOException{
@@ -30,7 +35,23 @@ public class AsyncTcpServer {
     }
 
     private void accept(){
-        serverChannel.accept(AsyncServerClientState.newInstance(), new AsyncServerAcceptHandler( serverChannel, serverProcessor ) );
+        serverChannel.accept(AsyncServerClientState.newInstance(), new AsyncServerAcceptHandler(serverChannel, serverProcessor));
+    }
+
+    public Iterable<AsyncServerClientState> getAllConnectionsExceptOne(int exceptConnectionId){
+        return connectionsMap.getAllExceptOne(exceptConnectionId);
+    }
+
+    public void addConnection (AsyncServerClientState clientState){
+        synchronized (connectionsMap){
+            connectionsMap.pushConnection( clientState.getInstance(), clientState);
+        }
+    }
+
+    public void removeConnection (AsyncServerClientState clientState){
+        synchronized (connectionsMap){
+            connectionsMap.remove(clientState.getInstance());
+        }
     }
 
     public void start() {

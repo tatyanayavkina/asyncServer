@@ -10,6 +10,11 @@ import java.nio.charset.StandardCharsets;
  */
 public class AsyncServerReadHandler implements CompletionHandler<Integer, AsyncServerClientState> {
     private final AsyncServerWriteHandler writeHandler = new AsyncServerWriteHandler();
+    private final ServerProcessor serverProcessor;
+
+    public AsyncServerReadHandler(ServerProcessor serverProcessor){
+        this.serverProcessor = serverProcessor;
+    }
 
     public void completed(Integer result, AsyncServerClientState clientState){
         if (result == -1)
@@ -44,8 +49,9 @@ public class AsyncServerReadHandler implements CompletionHandler<Integer, AsyncS
             readBuffer.flip();
             byte[] readBytes = readBuffer.array();
 
-            String str = new String( readBytes, StandardCharsets.UTF_8 );
-            System.out.println(str);
+            String message = new String( readBytes, StandardCharsets.UTF_8 );
+            serverProcessor.handleInputMessage(message, clientState);
+            System.out.println(message);
 
             readSizeBuffer.clear();
             clientState.deleteReadBuffer();

@@ -10,12 +10,10 @@ import java.nio.channels.CompletionHandler;
 public class AsyncServerAcceptHandler implements CompletionHandler<AsynchronousSocketChannel, AsyncServerClientState> {
     private final ServerProcessor serverProcessor;
     private final AsynchronousServerSocketChannel serverChannel;
-    private final AsyncServerReadHandler readHandler ;
 
     public AsyncServerAcceptHandler( AsynchronousServerSocketChannel serverChannel, ServerProcessor serverProcessor ) {
         this.serverProcessor = serverProcessor;
         this.serverChannel = serverChannel;
-        this.readHandler = new AsyncServerReadHandler();
     }
 
     @Override
@@ -25,7 +23,7 @@ public class AsyncServerAcceptHandler implements CompletionHandler<AsynchronousS
         // init channel
         clientState.initChannel(channel);
         // handle this connection
-        serverProcessor.handleInputMessage( clientState );
+        serverProcessor.handleClient(clientState);
     }
 
     @Override
