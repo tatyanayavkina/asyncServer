@@ -2,5 +2,5 @@
 <params>
     <port>9999</port>
     <messagelimit>10</messagelimit>
-    <connectionlimit>10</connectionlimit>
+    <threadcount>10</threadcount>
 </params>

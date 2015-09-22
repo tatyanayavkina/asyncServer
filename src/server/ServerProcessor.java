@@ -1,5 +1,8 @@
 package server;
 
+import utils.Config;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,10 +15,10 @@ public class ServerProcessor {
     private final ArrayList<String> messageList;
     private AsyncTcpServer tcpServer;
 
-    public ServerProcessor(Config config, HashMap<String,String> users){
+    public ServerProcessor(Config config, HashMap<String,String> users) throws IOException{
         this.messageStoreLimit = config.getMessageLimit();
         this.users = users;
         this.messageList = new ArrayList<String>(messageStoreLimit);
-        this.tcpServer = new AsyncTcpServer(config.getPort(), config.getConnectionLimit());
+        this.tcpServer = new AsyncTcpServer(config.getPort(), config.getThreadCount());
     }
 }
