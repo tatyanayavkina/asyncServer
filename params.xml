@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <params>
+    <host>localhost</host>
     <port>9999</port>
     <messagelimit>10</messagelimit>
     <threadcount>10</threadcount>

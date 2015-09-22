@@ -19,6 +19,6 @@ public class ServerProcessor {
         this.messageStoreLimit = config.getMessageLimit();
         this.users = users;
         this.messageList = new ArrayList<String>(messageStoreLimit);
-        this.tcpServer = new AsyncTcpServer(config.getPort(), config.getThreadCount());
+        this.tcpServer = new AsyncTcpServer(this, config.getHost(), config.getPort(), config.getThreadCount());
     }
 }

@@ -10,19 +10,22 @@ import java.util.concurrent.Executors;
  * Created on 15.09.2015.
  */
 public class AsyncTcpServer {
-    private static String HOST = "localhost";
+    private ServerProcessor serverProcessor;
+    private final String host;
     private final int port;
     private final AsynchronousChannelGroup group;
     private final AsynchronousServerSocketChannel serverChannel;
 
-    public AsyncTcpServer( int port, int threadCount ) throws IOException {
+    public AsyncTcpServer( ServerProcessor serverProcessor, String host, int port, int threadCount ) throws IOException {
+        this.serverProcessor = serverProcessor;
+        this.host = host;
         this.port = port;
         this.group = AsynchronousChannelGroup.withFixedThreadPool( threadCount, Executors.defaultThreadFactory() );
         this.serverChannel = AsynchronousServerSocketChannel.open( this.group );
     }
 
     private void bindAddress() throws IOException{
-        InetSocketAddress hostAddress = new InetSocketAddress( HOST, port );
+        InetSocketAddress hostAddress = new InetSocketAddress( host, port );
         serverChannel.bind(hostAddress);
     }
 

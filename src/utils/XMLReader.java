@@ -13,6 +13,7 @@ import java.util.HashMap;
  */
 public class XMLReader {
     private static final String pathToParams = "params.xml";
+    private static final String host = "host";
     private static final String port = "port";
     private static final String message = "messagelimit";
     private static final String thread = "threadcount";
@@ -55,11 +56,12 @@ public class XMLReader {
         try{
             Element root = getRootElement(pathToParams);
 
+            String hostValue = getTextValue(root, host);
             String portValue = getTextValue(root, port);
             String messagesLimitValue = getTextValue(root, message);
             String threadCountValue = getTextValue(root, thread);
 
-            config = new Config(portValue, messagesLimitValue, threadCountValue);
+            config = new Config(hostValue, portValue, messagesLimitValue, threadCountValue);
 
         } catch (Exception e){
             e.printStackTrace();
