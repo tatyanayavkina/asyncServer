@@ -10,18 +10,10 @@ import java.nio.channels.CompletionHandler;
 public class AsyncServerWriteHandler implements CompletionHandler<Integer, AsyncServerClientState> {
 
     @Override
-    public void completed(Integer result, AsyncServerClientState chanelState)
+    public void completed(Integer result, AsyncServerClientState clientState)
     {
-        ByteBuffer wb = chanelState.getWriteBuffer();
-
-        AsynchronousSocketChannel channel = chanelState.getChannel();
-        if (wb.remaining() > 0)
-        {
-            channel.write(wb, chanelState, this);
-        }
-        else
-        {
-            wb.flip();
+        if ( clientState.getWriteBuffer().hasRemaining() ) {
+            clientState.getChannel().write( clientState.getWriteBuffer(), clientState, this );
         }
     }
 

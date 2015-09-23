@@ -24,7 +24,7 @@ public class AsyncServerClientState {
     }
 
     public AsyncServerClientState(AsynchronousSocketChannel asc){
-        this.instance = 1;
+        this.instance = -1;
         this.channel = asc;
         this.readSizeBuffer = ByteBuffer.allocate(4);
     }

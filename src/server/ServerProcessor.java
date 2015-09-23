@@ -44,11 +44,16 @@ public class ServerProcessor {
     }
 
     private void sendMessage(String message, int clientId){
+        ByteBuffer writeBuffer;
+        AsyncServerClientState bufClientState;
         //send message to all connected clients except client with id
         Iterable<AsyncServerClientState> clientStates = this.tcpServer.getAllConnectionsExceptOne( clientId );
         for ( AsyncServerClientState clientState : clientStates ) {
-            ByteBuffer writeBuffer = prepareMessage( message );
-
+            writeBuffer = prepareMessage( message );
+            bufClientState = new AsyncServerClientState( clientState.getChannel() );
+            bufClientState.setWriteBuffer(writeBuffer);
+            bufClientState.getWriteBuffer().flip();
+            bufClientState.getChannel().write( bufClientState.getWriteBuffer(), bufClientState, new AsyncServerWriteHandler() );
         }
     }
 
