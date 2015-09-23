@@ -16,12 +16,14 @@ public class AsyncTcpClient {
     private final String host;
     private final AsynchronousChannelGroup group;
     private final AsynchronousSocketChannel channel;
+    private final ClientProcessor clientProcessor;
 
-    public AsyncTcpClient(String host, int port) throws IOException{
+    public AsyncTcpClient(String host, int port, ClientProcessor clientProcessor) throws IOException{
         this.host = host;
         this.port = port;
         this.group = AsynchronousChannelGroup.withFixedThreadPool(2, Executors.defaultThreadFactory());
         this.channel = AsynchronousSocketChannel.open(this.group);
+        this.clientProcessor = clientProcessor;
     }
 
     public void connect(){
