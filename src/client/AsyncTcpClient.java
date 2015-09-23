@@ -28,10 +28,15 @@ public class AsyncTcpClient {
 
     public void connect(){
         AsyncServerClientState clientState = new AsyncServerClientState( channel );
-        channel.connect(new InetSocketAddress(host, port), clientState, new AsyncClientConnectionHandler(this) );
+        channel.connect(new InetSocketAddress(host, port), clientState, new AsyncClientConnectionHandler(this.clientProcessor) );
     }
 
     public void close(){
+        try{
+            channel.close();
+        } catch (IOException e){
+            System.out.println("Connection closing error!");
+        }
 
     }
 }

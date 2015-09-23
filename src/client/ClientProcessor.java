@@ -24,4 +24,24 @@ public class ClientProcessor {
         tcpClient.connect();
     }
 
+    public void stop(){
+        tcpClient.close();
+    }
+
+    public void handleConnection( ){
+        if ( authorize() ){
+            handleUserInput(writer);
+            handleServerInput(reader);
+        }
+    }
+
+    private boolean authorize(){
+        sendAuthorizationMessage( );
+        return readAuthorizationMessage( );
+    }
+
+    private void sendAuthorizationMessage(){
+
+    }
+
 }

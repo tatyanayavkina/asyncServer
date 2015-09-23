@@ -9,17 +9,17 @@ import java.nio.channels.CompletionHandler;
  */
 public class AsyncClientConnectionHandler implements CompletionHandler<Void, AsyncServerClientState>{
     private UserInputHandler inputHandler;
-    private AsyncTcpClient tcpClient;
+    private final ClientProcessor clientProcessor;
 
-    public AsyncClientConnectionHandler(AsyncTcpClient tcpClient){
-        this.tcpClient = tcpClient;
+    public AsyncClientConnectionHandler(ClientProcessor clientProcessor){
+        this.clientProcessor = clientProcessor;
     }
 
 
     @Override
     public void completed(Void result, AsyncServerClientState clientState) {
         // handle user input
-        this.inputHandler = new UserInputHandler(this.tcpClient, clientState.getChannel());
+        this.inputHandler = new UserInputHandler(this.clientProcessor, clientState.getChannel());
         new Thread(this.inputHandler).start();
         // handle server messages
         clientState.getChannel().read(clientState.getReadSizeBuffer(), clientState, new AsyncClientReadHandler());

@@ -1,6 +1,7 @@
 package server;
 
 import utils.Config;
+import utils.MessageWriter;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -34,25 +35,13 @@ public class ServerProcessor {
         }
     }
 
-    private ByteBuffer prepareMessage(String message){
-        byte[] messageBytes = message.getBytes( StandardCharsets.UTF_8 );
-        ByteBuffer writeBuffer = ByteBuffer.allocate(messageBytes.length + 4);
-        writeBuffer.putInt(messageBytes.length);
-        writeBuffer.put(messageBytes);
-
-        return writeBuffer;
-    }
-
     private void sendMessage(String message, int clientId){
         ByteBuffer writeBuffer;
         AsyncServerClientState bufClientState;
         //send message to all connected clients except client with id
         Iterable<AsyncServerClientState> clientStates = this.tcpServer.getAllConnectionsExceptOne( clientId );
         for ( AsyncServerClientState clientState : clientStates ) {
-            writeBuffer = prepareMessage( message );
-            bufClientState = new AsyncServerClientState( clientState.getChannel() );
-            bufClientState.setWriteBuffer(writeBuffer);
-            bufClientState.getWriteBuffer().flip();
+            bufClientState = MessageWriter.createClientState( clientState.getChannel(), message );
             bufClientState.getChannel().write( bufClientState.getWriteBuffer(), bufClientState, new AsyncServerWriteHandler() );
         }
     }
