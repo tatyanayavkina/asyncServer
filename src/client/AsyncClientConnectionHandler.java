@@ -8,7 +8,7 @@ import java.nio.channels.CompletionHandler;
  * Created on 15.09.2015.
  */
 public class AsyncClientConnectionHandler implements CompletionHandler<Void, AsyncServerClientState>{
-    private UserInputHandler inputHandler;
+//    private UserInputHandler inputHandler;
     private final ClientProcessor clientProcessor;
 
     public AsyncClientConnectionHandler(ClientProcessor clientProcessor){
@@ -18,11 +18,12 @@ public class AsyncClientConnectionHandler implements CompletionHandler<Void, Asy
 
     @Override
     public void completed(Void result, AsyncServerClientState clientState) {
-        // handle user input
-        this.inputHandler = new UserInputHandler(this.clientProcessor, clientState.getChannel());
-        new Thread(this.inputHandler).start();
-        // handle server messages
-        clientState.getChannel().read(clientState.getReadSizeBuffer(), clientState, new AsyncClientReadHandler());
+        //handle connection
+        clientProcessor.handleConnection( clientState.getChannel() );
+
+//        this.inputHandler = new UserInputHandler(this.clientProcessor, clientState.getChannel());
+//        new Thread(this.inputHandler).start();
+//        clientState.getChannel().read(clientState.getReadSizeBuffer(), clientState, new AsyncClientReadHandler());
     }
 
     @Override

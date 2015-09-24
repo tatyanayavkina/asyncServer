@@ -1,5 +1,10 @@
 package client;
 
+import server.AsyncServerClientState;
+import utils.JsonConverter;
+import utils.MessageWriter;
+import utils.UserCredentials;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.channels.AsynchronousServerSocketChannel;
@@ -31,19 +36,22 @@ public class ClientProcessor {
     }
 
     public void handleConnection( AsynchronousSocketChannel channel){
-        if ( authorize() ){
+        if ( authorize( channel ) ){
 //            handleUserInput();
 //            handleServerInput();
         }
     }
 
-    private boolean authorize(){
-        sendAuthorizationMessage( );
+    private boolean authorize(AsynchronousSocketChannel channel){
+        sendAuthorizationMessage( channel );
         return readAuthorizationMessage( );
     }
 
-    private void sendAuthorizationMessage(){
-
+    private void sendAuthorizationMessage(AsynchronousSocketChannel channel){
+        UserCredentials credentials = new UserCredentials( username, password );
+        String jsonCredentials = JsonConverter.toJson( credentials );
+        AsyncServerClientState clientState = MessageWriter.createClientState(channel, jsonCredentials);
+        clientState.getChannel().write( clientState.getWriteBuffer(), clientState, new AsyncClientWriteHandler() );
     }
 
     private boolean readAuthorizationMessage(){
