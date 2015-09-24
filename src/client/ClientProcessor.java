@@ -35,7 +35,7 @@ public class ClientProcessor {
         tcpClient.close();
     }
 
-    public void handleConnection( AsynchronousSocketChannel channel){
+    public void handleConnection(AsynchronousSocketChannel channel){
         if ( authorize( channel ) ){
 //            handleUserInput();
 //            handleServerInput();

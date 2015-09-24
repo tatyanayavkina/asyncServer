@@ -1,10 +1,13 @@
 package server;
 
 import utils.Config;
+import utils.JsonConverter;
 import utils.MessageWriter;
+import utils.UserCredentials;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +27,15 @@ public class ServerProcessor {
         this.messageList = new ArrayList<String>(messageStoreLimit);
         this.tcpServer = new AsyncTcpServer(this, config.getHost(), config.getPort(), config.getThreadCount());
     }
+
+    private boolean authenticate(AsynchronousSocketChannel channel) {
+        UserCredentials credentials = (UserCredentials) JsonConverter.fromJson(, UserCredentials.class);
+        boolean isAuthenticated = ( credentials != null && isUserRegistered( credentials ) );
+        sendAuthenticationMessage(tcpServerSocketProcessor, isAuthenticated);
+
+        return isAuthenticated;
+    }
+
 
     private void storeMessage( String message ){
         synchronized ( messageList ){
@@ -47,9 +59,13 @@ public class ServerProcessor {
     }
 
     public void handleClient(AsyncServerClientState clientState){
-        tcpServer.addConnection( clientState );
-        AsyncServerReadHandler readHandler = new AsyncServerReadHandler( this );
-        clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, readHandler );
+
+
+        if ( authenticate( clientState.getChannel() ) ){
+            tcpServer.addConnection( clientState );
+            AsyncServerReadHandler readHandler = new AsyncServerReadHandler( true, this, "handleInputMessage" );
+            clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, readHandler );
+        }
     }
 
     public void handleInputMessage(String message, AsyncServerClientState clientState){
