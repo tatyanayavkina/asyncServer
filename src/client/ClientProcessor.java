@@ -2,6 +2,8 @@ package client;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.channels.AsynchronousServerSocketChannel;
+import java.nio.channels.AsynchronousSocketChannel;
 
 /**
  * Created on 23.09.2015.
@@ -28,10 +30,10 @@ public class ClientProcessor {
         tcpClient.close();
     }
 
-    public void handleConnection( ){
+    public void handleConnection( AsynchronousSocketChannel channel){
         if ( authorize() ){
-            handleUserInput(writer);
-            handleServerInput(reader);
+//            handleUserInput();
+//            handleServerInput();
         }
     }
 
@@ -42,6 +44,10 @@ public class ClientProcessor {
 
     private void sendAuthorizationMessage(){
 
+    }
+
+    private boolean readAuthorizationMessage(){
+        return true;
     }
 
 }
