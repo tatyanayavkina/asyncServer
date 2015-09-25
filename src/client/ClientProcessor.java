@@ -1,11 +1,9 @@
 package client;
 
+import handlers.ReadHandler;
 import handlers.WriteHandler;
 import handlers.ClientState;
-import utils.ChatProcessor;
-import utils.JsonConverter;
-import utils.MessageWriter;
-import utils.UserCredentials;
+import utils.*;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -38,23 +36,29 @@ public class ClientProcessor implements ChatProcessor{
 
     public void handleConnection(AsynchronousSocketChannel channel){
         sendAuthorizationMessage(channel);
-
+        ClientState clientState = new ClientState( channel );
+        ReadHandler readHandler = new ReadHandler( false, this, "handleAuthorizationMessage");
+        clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, readHandler );
     }
 
-    private boolean authorize(AsynchronousSocketChannel channel){
-        sendAuthorizationMessage( channel );
-        return readAuthorizationMessage( );
-    }
 
     private void sendAuthorizationMessage(AsynchronousSocketChannel channel){
         UserCredentials credentials = new UserCredentials( username, password );
         String jsonCredentials = JsonConverter.toJson( credentials );
-        ClientState clientState = MessageWriter.createClientState(channel, jsonCredentials);
+        ClientState clientState = MessageWriter.createClientState( channel, jsonCredentials );
         clientState.getChannel().write( clientState.getWriteBuffer(), clientState, new WriteHandler() );
     }
 
-    private boolean readAuthorizationMessage(){
-        return true;
+    public void handleAuthorizationMessage(String message, ClientState clientState){
+        boolean isAuthorized = false;
+        UtilityMessage utilityMessage = (UtilityMessage) JsonConverter.fromJson( message, UtilityMessage.class );
+        UtilityMessage.StatusCodes statusCode = utilityMessage.getCode();
+        System.out.println ( statusCode.getDescription() );
+
+        if ( statusCode == UtilityMessage.StatusCodes.AUTHORIZED){
+            isAuthorized = true;
+        }
+
     }
 
 }
