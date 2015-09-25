@@ -23,7 +23,7 @@ public class AsyncServerAcceptHandler implements CompletionHandler<AsynchronousS
         // init channel
         clientState.initChannel(channel);
         // handle this connection
-        serverProcessor.handleClient(clientState);
+        serverProcessor.handleNewClient(clientState);
     }
 
     @Override
