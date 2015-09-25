@@ -1,5 +1,7 @@
 package server;
 
+import handlers.ClientState;
+
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
@@ -7,7 +9,7 @@ import java.nio.channels.CompletionHandler;
 /**
  * Created on 15.09.2015.
  */
-public class AsyncServerAcceptHandler implements CompletionHandler<AsynchronousSocketChannel, AsyncServerClientState> {
+public class AsyncServerAcceptHandler implements CompletionHandler<AsynchronousSocketChannel, ClientState> {
     private final ServerProcessor serverProcessor;
     private final AsynchronousServerSocketChannel serverChannel;
 
@@ -17,9 +19,9 @@ public class AsyncServerAcceptHandler implements CompletionHandler<AsynchronousS
     }
 
     @Override
-    public void completed( AsynchronousSocketChannel channel,  AsyncServerClientState clientState ) {
+    public void completed( AsynchronousSocketChannel channel,  ClientState clientState ) {
         // accept next connection
-        serverChannel.accept(AsyncServerClientState.newInstance(), this);
+        serverChannel.accept(ClientState.newInstance(), this);
         // init channel
         clientState.initChannel(channel);
         // handle this connection
@@ -27,7 +29,7 @@ public class AsyncServerAcceptHandler implements CompletionHandler<AsynchronousS
     }
 
     @Override
-    public void failed( Throwable exc, AsyncServerClientState clientState ) {
+    public void failed( Throwable exc, ClientState clientState ) {
         System.out.println("Error while accepting client: " + exc.toString());
     }
 }

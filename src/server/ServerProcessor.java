@@ -1,5 +1,6 @@
 package server;
 
+import handlers.ClientState;
 import handlers.ReadHandler;
 import handlers.WriteHandler;
 import utils.*;
@@ -24,7 +25,7 @@ public class ServerProcessor implements ChatProcessor{
         this.tcpServer = new AsyncTcpServer(this, config.getHost(), config.getPort(), config.getThreadCount());
     }
 
-    private boolean authenticate(String credentialsStr, AsyncServerClientState clientState) {
+    private boolean authenticate(String credentialsStr, ClientState clientState) {
         UserCredentials credentials = (UserCredentials) JsonConverter.fromJson(credentialsStr, UserCredentials.class);
         boolean isAuthenticated = ( credentials != null && isUserRegistered( credentials ) );
         sendAuthenticationMessage(clientState, isAuthenticated);
@@ -48,7 +49,7 @@ public class ServerProcessor implements ChatProcessor{
         return isRegistered;
     }
 
-    private void sendAuthenticationMessage(AsyncServerClientState clientState, boolean isAuthenticated){
+    private void sendAuthenticationMessage(ClientState clientState, boolean isAuthenticated){
         UtilityMessage utilityMessage;
 
         if ( isAuthenticated ){
@@ -58,7 +59,7 @@ public class ServerProcessor implements ChatProcessor{
         }
 
         String utilityMessageJson = JsonConverter.toJson( utilityMessage );
-        AsyncServerClientState bufClientState = MessageWriter.createClientState( clientState.getChannel(), utilityMessageJson);
+        ClientState bufClientState = MessageWriter.createClientState( clientState.getChannel(), utilityMessageJson);
         bufClientState.getChannel().write( bufClientState.getWriteBuffer(), bufClientState, new WriteHandler());
     }
 
@@ -74,21 +75,21 @@ public class ServerProcessor implements ChatProcessor{
     }
 
     private void sendMessage(String message, int clientId){
-        AsyncServerClientState bufClientState;
+        ClientState bufClientState;
         //send message to all connected clients except client with id
-        Iterable<AsyncServerClientState> clientStates = this.tcpServer.getAllConnectionsExceptOne( clientId );
-        for ( AsyncServerClientState clientState : clientStates ) {
+        Iterable<ClientState> clientStates = this.tcpServer.getAllConnectionsExceptOne( clientId );
+        for ( ClientState clientState : clientStates ) {
             bufClientState = MessageWriter.createClientState( clientState.getChannel(), message );
             bufClientState.getChannel().write( bufClientState.getWriteBuffer(), bufClientState, new WriteHandler() );
         }
     }
 
-    public void handleNewClient(AsyncServerClientState clientState){
+    public void handleNewClient(ClientState clientState){
         ReadHandler readHandler = new ReadHandler( false, this, "handleAuthorization" );
         clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, readHandler );
     }
 
-    public void handleAuthorization(String credentials, AsyncServerClientState clientState){
+    public void handleAuthorization(String credentials, ClientState clientState){
         if ( authenticate( credentials, clientState ) ){
             tcpServer.addConnection( clientState );
             ReadHandler readHandler = new ReadHandler( true, this, "handleInputMessage" );
@@ -96,7 +97,7 @@ public class ServerProcessor implements ChatProcessor{
         }
     }
 
-    public void handleInputMessage(String message, AsyncServerClientState clientState){
+    public void handleInputMessage(String message, ClientState clientState){
         storeMessage( message );
         sendMessage( message, clientState.getInstance() );
     }

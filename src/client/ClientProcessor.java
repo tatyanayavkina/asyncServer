@@ -1,7 +1,7 @@
 package client;
 
 import handlers.WriteHandler;
-import server.AsyncServerClientState;
+import handlers.ClientState;
 import utils.ChatProcessor;
 import utils.JsonConverter;
 import utils.MessageWriter;
@@ -9,7 +9,6 @@ import utils.UserCredentials;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 
 /**
@@ -38,10 +37,8 @@ public class ClientProcessor implements ChatProcessor{
     }
 
     public void handleConnection(AsynchronousSocketChannel channel){
-        if ( authorize( channel ) ){
-//            handleUserInput();
-//            handleServerInput();
-        }
+        sendAuthorizationMessage(channel);
+
     }
 
     private boolean authorize(AsynchronousSocketChannel channel){
@@ -52,7 +49,7 @@ public class ClientProcessor implements ChatProcessor{
     private void sendAuthorizationMessage(AsynchronousSocketChannel channel){
         UserCredentials credentials = new UserCredentials( username, password );
         String jsonCredentials = JsonConverter.toJson( credentials );
-        AsyncServerClientState clientState = MessageWriter.createClientState(channel, jsonCredentials);
+        ClientState clientState = MessageWriter.createClientState(channel, jsonCredentials);
         clientState.getChannel().write( clientState.getWriteBuffer(), clientState, new WriteHandler() );
     }
 

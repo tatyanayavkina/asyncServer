@@ -1,6 +1,6 @@
 package client;
 
-import server.AsyncServerClientState;
+import handlers.ClientState;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.CompletionHandler;
@@ -9,10 +9,10 @@ import java.nio.charset.StandardCharsets;
 /**
  * Created on 17.09.2015.
  */
-public class AsyncClientReadHandler implements CompletionHandler<Integer, AsyncServerClientState>{
+public class AsyncClientReadHandler implements CompletionHandler<Integer, ClientState>{
 
     @Override
-    public void completed(Integer result, AsyncServerClientState clientState) {
+    public void completed(Integer result, ClientState clientState) {
         if(result != -1){
             ByteBuffer readSizeBuffer = clientState.getReadSizeBuffer();
 
@@ -48,7 +48,7 @@ public class AsyncClientReadHandler implements CompletionHandler<Integer, AsyncS
     }
 
     @Override
-    public void failed(Throwable exc, AsyncServerClientState clientState) {
+    public void failed(Throwable exc, ClientState clientState) {
 
     }
 }

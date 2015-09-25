@@ -1,12 +1,12 @@
 package server;
 
+import handlers.ClientState;
 import utils.ConnectionAutoIncrementMap;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
-import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 /**
@@ -35,20 +35,20 @@ public class AsyncTcpServer {
     }
 
     private void accept(){
-        serverChannel.accept(AsyncServerClientState.newInstance(), new AsyncServerAcceptHandler(serverChannel, serverProcessor));
+        serverChannel.accept(ClientState.newInstance(), new AsyncServerAcceptHandler(serverChannel, serverProcessor));
     }
 
-    public Iterable<AsyncServerClientState> getAllConnectionsExceptOne(int exceptConnectionId){
+    public Iterable<ClientState> getAllConnectionsExceptOne(int exceptConnectionId){
         return connectionsMap.getAllExceptOne(exceptConnectionId);
     }
 
-    public void addConnection (AsyncServerClientState clientState){
+    public void addConnection (ClientState clientState){
         synchronized (connectionsMap){
             connectionsMap.pushConnection( clientState.getInstance(), clientState);
         }
     }
 
-    public void removeConnection (AsyncServerClientState clientState){
+    public void removeConnection (ClientState clientState){
         synchronized (connectionsMap){
             connectionsMap.remove(clientState.getInstance());
         }

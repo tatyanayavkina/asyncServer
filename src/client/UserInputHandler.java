@@ -1,7 +1,7 @@
 package client;
 
 import handlers.WriteHandler;
-import server.AsyncServerClientState;
+import handlers.ClientState;
 import utils.MessageWriter;
 
 import java.io.BufferedReader;
@@ -39,7 +39,7 @@ public class UserInputHandler implements Runnable {
                     continue;
                 }
 
-                AsyncServerClientState clientState = MessageWriter.createClientState( channel, ln);
+                ClientState clientState = MessageWriter.createClientState( channel, ln);
                 clientState.getChannel().write( clientState.getWriteBuffer(), clientState, new WriteHandler() );
             }
         } catch (IOException e) {

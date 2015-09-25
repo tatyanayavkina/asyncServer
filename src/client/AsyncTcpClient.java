@@ -1,6 +1,6 @@
 package client;
 
-import server.AsyncServerClientState;
+import handlers.ClientState;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -27,7 +27,7 @@ public class AsyncTcpClient {
     }
 
     public void connect(){
-        AsyncServerClientState clientState = new AsyncServerClientState( channel );
+        ClientState clientState = new ClientState( channel );
         channel.connect(new InetSocketAddress(host, port), clientState, new AsyncClientConnectionHandler(this.clientProcessor) );
     }
 

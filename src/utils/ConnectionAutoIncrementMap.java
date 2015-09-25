@@ -1,6 +1,6 @@
 package utils;
 
-import server.AsyncServerClientState;
+import handlers.ClientState;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Created on 22.09.2015.
  */
-public class ConnectionAutoIncrementMap extends HashMap<Integer, AsyncServerClientState> {
+public class ConnectionAutoIncrementMap extends HashMap<Integer, ClientState> {
     public int connectionCounter;
 
     public ConnectionAutoIncrementMap() {
@@ -21,23 +21,23 @@ public class ConnectionAutoIncrementMap extends HashMap<Integer, AsyncServerClie
         return connectionCounter++;
     }
 
-    public void pushConnection(int connectionId, AsyncServerClientState clientState) {
+    public void pushConnection(int connectionId, ClientState clientState) {
         this.put(connectionId, clientState);
     }
 
-    public Iterable<AsyncServerClientState> getAllExceptOne(int exceptConnectionId) {
-        ArrayList<AsyncServerClientState> result;
-        Set<Entry<Integer, AsyncServerClientState>> set;
+    public Iterable<ClientState> getAllExceptOne(int exceptConnectionId) {
+        ArrayList<ClientState> result;
+        Set<Entry<Integer, ClientState>> set;
         synchronized (this){
             int resultSize = size() - 1;
             if (resultSize < 1)
-                return new ArrayList<AsyncServerClientState>(0);
+                return new ArrayList<ClientState>(0);
 
-            result = new ArrayList<AsyncServerClientState>(resultSize);
+            result = new ArrayList<ClientState>(resultSize);
             set = entrySet();
         }
 
-        for ( Map.Entry<Integer, AsyncServerClientState> s : set ) {
+        for ( Map.Entry<Integer, ClientState> s : set ) {
             Integer key = s.getKey();
 
             if(key != exceptConnectionId){

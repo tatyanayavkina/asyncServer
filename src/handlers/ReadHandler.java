@@ -1,6 +1,5 @@
 package handlers;
 
-import server.AsyncServerClientState;
 import utils.ChatProcessor;
 
 import java.io.IOException;
@@ -13,7 +12,7 @@ import java.lang.reflect.Method;
 /**
  * Created on 15.09.2015.
  */
-public class ReadHandler implements CompletionHandler<Integer, AsyncServerClientState> {
+public class ReadHandler implements CompletionHandler<Integer, ClientState> {
     private final ChatProcessor processor;
     private String callback;
     private boolean isMessageExchange;
@@ -33,7 +32,7 @@ public class ReadHandler implements CompletionHandler<Integer, AsyncServerClient
     private Method prepareCallback(){
         Method method = null;
         try {
-            method = processor.getClass().getMethod(callback, String.class, AsyncServerClientState.class);
+            method = processor.getClass().getMethod(callback, String.class, ClientState.class);
         } catch (SecurityException e) {
             // ...
         } catch (NoSuchMethodException e) {
@@ -42,7 +41,7 @@ public class ReadHandler implements CompletionHandler<Integer, AsyncServerClient
         return  method;
     }
 
-    public void completed(Integer result, AsyncServerClientState clientState){
+    public void completed(Integer result, ClientState clientState){
         if (result == -1)
         {
             try {
@@ -101,7 +100,7 @@ public class ReadHandler implements CompletionHandler<Integer, AsyncServerClient
         }
     }
 
-    public void failed(Throwable ex, AsyncServerClientState clientState){
+    public void failed(Throwable ex, ClientState clientState){
         System.out.printf("Error while reading from client #%02d!%n", clientState.getInstance());
     }
 }

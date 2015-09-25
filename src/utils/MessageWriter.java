@@ -1,6 +1,6 @@
 package utils;
 
-import server.AsyncServerClientState;
+import handlers.ClientState;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -20,9 +20,9 @@ public class MessageWriter {
         return writeBuffer;
     }
 
-    public static AsyncServerClientState createClientState ( AsynchronousSocketChannel channel, String message ){
+    public static ClientState createClientState ( AsynchronousSocketChannel channel, String message ){
         ByteBuffer writeBuffer = createWriteBuffer( message );
-        AsyncServerClientState clientState = new AsyncServerClientState( channel );
+        ClientState clientState = new ClientState( channel );
         clientState.setWriteBuffer( writeBuffer );
         clientState.getWriteBuffer().flip();
 

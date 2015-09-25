@@ -1,4 +1,4 @@
-package server;
+package handlers;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created on 15.09.2015.
  */
-public class AsyncServerClientState {
+public class ClientState {
     private static final AtomicInteger counter = new AtomicInteger();
 
     private final int instance;
@@ -17,24 +17,24 @@ public class AsyncServerClientState {
 
     private AsynchronousSocketChannel channel;
 
-    private AsyncServerClientState(final int instance)
+    private ClientState(final int instance)
     {
         this.instance = instance;
         this.readSizeBuffer = ByteBuffer.allocate(4);
     }
 
-    public AsyncServerClientState(AsynchronousSocketChannel asc){
+    public ClientState(AsynchronousSocketChannel asc){
         this.instance = -1;
         this.channel = asc;
         this.readSizeBuffer = ByteBuffer.allocate(4);
     }
 
-    public static AsyncServerClientState newInstance()
+    public static ClientState newInstance()
     {
-        return new AsyncServerClientState(counter.getAndIncrement());
+        return new ClientState(counter.getAndIncrement());
     }
 
-    public AsyncServerClientState initChannel(AsynchronousSocketChannel asc)
+    public ClientState initChannel(AsynchronousSocketChannel asc)
     {
         this.channel = asc;
         return this;
