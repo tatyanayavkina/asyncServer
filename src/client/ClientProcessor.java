@@ -1,5 +1,6 @@
 package client;
 
+import handlers.WriteHandler;
 import server.AsyncServerClientState;
 import utils.JsonConverter;
 import utils.MessageWriter;
@@ -51,7 +52,7 @@ public class ClientProcessor {
         UserCredentials credentials = new UserCredentials( username, password );
         String jsonCredentials = JsonConverter.toJson( credentials );
         AsyncServerClientState clientState = MessageWriter.createClientState(channel, jsonCredentials);
-        clientState.getChannel().write( clientState.getWriteBuffer(), clientState, new AsyncClientWriteHandler() );
+        clientState.getChannel().write( clientState.getWriteBuffer(), clientState, new WriteHandler() );
     }
 
     private boolean readAuthorizationMessage(){

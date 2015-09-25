@@ -1,5 +1,7 @@
 package server;
 
+import handlers.AsyncServerReadHandler;
+import handlers.WriteHandler;
 import utils.*;
 
 import java.io.IOException;
@@ -57,7 +59,7 @@ public class ServerProcessor {
 
         String utilityMessageJson = JsonConverter.toJson( utilityMessage );
         AsyncServerClientState bufClientState = MessageWriter.createClientState( clientState.getChannel(), utilityMessageJson);
-        bufClientState.getChannel().write( bufClientState.getWriteBuffer(), bufClientState, new AsyncServerWriteHandler());
+        bufClientState.getChannel().write( bufClientState.getWriteBuffer(), bufClientState, new WriteHandler());
     }
 
 
@@ -77,7 +79,7 @@ public class ServerProcessor {
         Iterable<AsyncServerClientState> clientStates = this.tcpServer.getAllConnectionsExceptOne( clientId );
         for ( AsyncServerClientState clientState : clientStates ) {
             bufClientState = MessageWriter.createClientState( clientState.getChannel(), message );
-            bufClientState.getChannel().write( bufClientState.getWriteBuffer(), bufClientState, new AsyncServerWriteHandler() );
+            bufClientState.getChannel().write( bufClientState.getWriteBuffer(), bufClientState, new WriteHandler() );
         }
     }
 

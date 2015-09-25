@@ -1,4 +1,7 @@
-package server;
+package handlers;
+
+import server.AsyncServerClientState;
+import server.ServerProcessor;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -11,7 +14,7 @@ import java.lang.reflect.Method;
  * Created on 15.09.2015.
  */
 public class AsyncServerReadHandler implements CompletionHandler<Integer, AsyncServerClientState> {
-    private final AsyncServerWriteHandler writeHandler = new AsyncServerWriteHandler();
+    private final WriteHandler writeHandler = new WriteHandler();
     private final ServerProcessor serverProcessor;
     private String callback;
     private boolean isMessageExchange;

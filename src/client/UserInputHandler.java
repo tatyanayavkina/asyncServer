@@ -1,14 +1,14 @@
 package client;
 
+import handlers.WriteHandler;
 import server.AsyncServerClientState;
 import utils.MessageWriter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
-import java.nio.charset.StandardCharsets;
+
 
 /**
  * Created on 18.09.2015.
@@ -40,7 +40,7 @@ public class UserInputHandler implements Runnable {
                 }
 
                 AsyncServerClientState clientState = MessageWriter.createClientState( channel, ln);
-                clientState.getChannel().write( clientState.getWriteBuffer(), clientState, new AsyncClientWriteHandler() );
+                clientState.getChannel().write( clientState.getWriteBuffer(), clientState, new WriteHandler() );
             }
         } catch (IOException e) {
 
