@@ -1,7 +1,7 @@
 package handlers;
 
 import server.AsyncServerClientState;
-import server.ServerProcessor;
+import utils.ChatProcessor;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -13,28 +13,27 @@ import java.lang.reflect.Method;
 /**
  * Created on 15.09.2015.
  */
-public class AsyncServerReadHandler implements CompletionHandler<Integer, AsyncServerClientState> {
-    private final WriteHandler writeHandler = new WriteHandler();
-    private final ServerProcessor serverProcessor;
+public class ReadHandler implements CompletionHandler<Integer, AsyncServerClientState> {
+    private final ChatProcessor processor;
     private String callback;
     private boolean isMessageExchange;
 
-    public AsyncServerReadHandler(boolean isMessageExchange, ServerProcessor serverProcessor, String callback){
+    public ReadHandler(boolean isMessageExchange, ChatProcessor processor, String callback){
         this.isMessageExchange = isMessageExchange;
-        this.serverProcessor = serverProcessor;
+        this.processor = processor;
         this.callback = callback;
     }
 
-    public AsyncServerReadHandler(boolean isMessageExchange, ServerProcessor serverProcessor){
+    public ReadHandler(boolean isMessageExchange, ChatProcessor processor){
         this.isMessageExchange = isMessageExchange;
-        this.serverProcessor = serverProcessor;
+        this.processor = processor;
         this.callback = null;
     }
 
     private Method prepareCallback(){
         Method method = null;
         try {
-            method = serverProcessor.getClass().getMethod(callback, String.class, AsyncServerClientState.class);
+            method = processor.getClass().getMethod(callback, String.class, AsyncServerClientState.class);
         } catch (SecurityException e) {
             // ...
         } catch (NoSuchMethodException e) {
@@ -79,11 +78,11 @@ public class AsyncServerReadHandler implements CompletionHandler<Integer, AsyncS
             String message = new String( readBytes, StandardCharsets.UTF_8 );
             System.out.println(message);
 
-//            serverProcessor.handleInputMessage(message, clientState);
+//            processor.handleInputMessage(message, clientState);
             Method callbackMethod;
             if ( callback != null && ( callbackMethod = prepareCallback() ) != null){
                 try {
-                    callbackMethod.invoke(serverProcessor, message, clientState);
+                    callbackMethod.invoke(processor, message, clientState);
                 } catch (IllegalArgumentException e) {
 
                 } catch (IllegalAccessException e) {

@@ -1,6 +1,6 @@
 package server;
 
-import handlers.AsyncServerReadHandler;
+import handlers.ReadHandler;
 import handlers.WriteHandler;
 import utils.*;
 
@@ -11,7 +11,7 @@ import java.util.HashMap;
 /**
  * Created on 21.09.2015.
  */
-public class ServerProcessor {
+public class ServerProcessor implements ChatProcessor{
     private HashMap<String,String> users;
     private final int messageStoreLimit;
     private final ArrayList<String> messageList;
@@ -84,14 +84,14 @@ public class ServerProcessor {
     }
 
     public void handleNewClient(AsyncServerClientState clientState){
-        AsyncServerReadHandler readHandler = new AsyncServerReadHandler( true, this, "handleAuthorization" );
+        ReadHandler readHandler = new ReadHandler( false, this, "handleAuthorization" );
         clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, readHandler );
     }
 
     public void handleAuthorization(String credentials, AsyncServerClientState clientState){
         if ( authenticate( credentials, clientState ) ){
             tcpServer.addConnection( clientState );
-            AsyncServerReadHandler readHandler = new AsyncServerReadHandler( true, this, "handleInputMessage" );
+            ReadHandler readHandler = new ReadHandler( true, this, "handleInputMessage" );
             clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, readHandler );
         }
     }

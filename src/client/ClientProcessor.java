@@ -2,6 +2,7 @@ package client;
 
 import handlers.WriteHandler;
 import server.AsyncServerClientState;
+import utils.ChatProcessor;
 import utils.JsonConverter;
 import utils.MessageWriter;
 import utils.UserCredentials;
@@ -14,7 +15,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 /**
  * Created on 23.09.2015.
  */
-public class ClientProcessor {
+public class ClientProcessor implements ChatProcessor{
     private String username;
     private String password;
     private String IP;
