@@ -50,13 +50,16 @@ public class ClientProcessor implements ChatProcessor{
     }
 
     public void handleAuthorizationMessage(String message, ClientState clientState){
-        boolean isAuthorized = false;
+
         UtilityMessage utilityMessage = (UtilityMessage) JsonConverter.fromJson( message, UtilityMessage.class );
         UtilityMessage.StatusCodes statusCode = utilityMessage.getCode();
         System.out.println ( statusCode.getDescription() );
 
         if ( statusCode == UtilityMessage.StatusCodes.AUTHORIZED){
-            isAuthorized = true;
+            ReadHandler readHandler = new ReadHandler( true, this);
+            clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, readHandler );
+        } else {
+            stop();
         }
 
     }
