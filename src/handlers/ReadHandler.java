@@ -23,12 +23,6 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
         this.callback = callback;
     }
 
-    public ReadHandler(boolean isMessageExchange, ChatProcessor processor){
-        this.isMessageExchange = isMessageExchange;
-        this.processor = processor;
-        this.callback = null;
-    }
-
     private Method prepareCallback(){
         Method method = null;
         try {
