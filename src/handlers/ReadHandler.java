@@ -76,7 +76,7 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
             byte[] readBytes = readBuffer.array();
 
             String message = new String( readBytes, StandardCharsets.UTF_8 );
-            System.out.println("in Handler=" + message);
+            System.out.println(message);
 
             clientState.getReadSizeBuffer().clear();
             clientState.setReadBuffer(null);
@@ -96,7 +96,6 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
             }
 
             if ( isMessageExchange ){
-                System.out.println("in Messaging");
                 clientState.getChannel().read(clientState.getReadSizeBuffer(), clientState, this);
             }
         }

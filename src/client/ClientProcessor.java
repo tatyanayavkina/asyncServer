@@ -56,6 +56,8 @@ public class ClientProcessor implements ChatProcessor{
         System.out.println ( statusCode.getDescription() );
 
         if ( statusCode == UtilityMessage.StatusCodes.AUTHORIZED){
+            UserInputHandler inputHandler = new UserInputHandler(this, clientState.getChannel());
+            new Thread(inputHandler).start();
             ReadHandler readHandler = new ReadHandler( true, this);
             clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, readHandler );
         } else {

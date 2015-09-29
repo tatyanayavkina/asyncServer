@@ -20,10 +20,6 @@ public class AsyncClientConnectionHandler implements CompletionHandler<Void, Cli
     public void completed(Void result, ClientState clientState) {
         //handle connection
         clientProcessor.handleConnection( clientState.getChannel() );
-
-//        this.inputHandler = new UserInputHandler(this.clientProcessor, clientState.getChannel());
-//        new Thread(this.inputHandler).start();
-//        clientState.getChannel().read(clientState.getReadSizeBuffer(), clientState, new AsyncClientReadHandler());
     }
 
     @Override
