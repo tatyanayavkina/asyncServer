@@ -67,6 +67,7 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
 
             clientState.getChannel().read( clientState.getReadBuffer(), clientState, this );
         } else {
+            System.out.println("callback=" + callback);
             ByteBuffer readBuffer = clientState.getReadBuffer();
             if (readBuffer.hasRemaining())
                 clientState.getChannel().read( clientState.getReadBuffer(), clientState, this );
@@ -75,7 +76,10 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
             byte[] readBytes = readBuffer.array();
 
             String message = new String( readBytes, StandardCharsets.UTF_8 );
-            System.out.println(message);
+            System.out.println("in Handler=" + message);
+
+            clientState.getReadSizeBuffer().clear();
+            clientState.setReadBuffer(null);
 
 //            processor.handleInputMessage(message, clientState);
             Method callbackMethod;
@@ -91,10 +95,8 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
                 }
             }
 
-            readSizeBuffer.clear();
-            clientState.deleteReadBuffer();
-
             if ( isMessageExchange ){
+                System.out.println("in Messaging");
                 clientState.getChannel().read(clientState.getReadSizeBuffer(), clientState, this);
             }
         }

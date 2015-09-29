@@ -99,6 +99,7 @@ public class ServerProcessor implements ChatProcessor{
 
     public void handleInputMessage(String message, ClientState clientState){
         storeMessage( message );
+        System.out.println("message" + message);
         sendMessage( message, clientState.getInstance() );
     }
 
