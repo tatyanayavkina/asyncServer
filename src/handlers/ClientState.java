@@ -44,9 +44,6 @@ public class ClientState {
         this.readBuffer = readBuffer;
     }
 
-    public void deleteReadBuffer(){
-        this.readBuffer = null;
-    }
 
     public void setWriteBuffer(ByteBuffer writeBuffer){
         this.writeBuffer = writeBuffer;
