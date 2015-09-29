@@ -60,10 +60,8 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
 
             readSizeBuffer.flip();
             int size = readSizeBuffer.getInt();
-
             ByteBuffer rBuffer = ByteBuffer.allocate(size);
             clientState.setReadBuffer(rBuffer);
-
             clientState.getChannel().read( clientState.getReadBuffer(), clientState, this );
         } else {
             ByteBuffer readBuffer = clientState.getReadBuffer();
@@ -72,13 +70,11 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
 
             readBuffer.flip();
             byte[] readBytes = readBuffer.array();
-
             String message = new String( readBytes, StandardCharsets.UTF_8 );
 
             clientState.getReadSizeBuffer().clear();
             clientState.setReadBuffer(null);
 
-//            processor.handleInputMessage(message, clientState);
             Method callbackMethod;
             if ( callback != null && ( callbackMethod = prepareCallback() ) != null){
                 try {
