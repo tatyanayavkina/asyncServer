@@ -33,7 +33,7 @@ public class AsyncTcpClient {
 
     public void close(){
         try{
-            channel.close();
+            group.shutdownNow();
         } catch (IOException e){
             System.out.println("Connection closing error!");
         }
