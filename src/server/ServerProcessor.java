@@ -15,13 +15,13 @@ import java.util.HashMap;
 public class ServerProcessor implements ChatProcessor{
     private HashMap<String,String> users;
     private final int messageStoreLimit;
-    private final ArrayList<String> messageList;
+    private final ArrayList<Message> messageList;
     private AsyncTcpServer tcpServer;
 
     public ServerProcessor(Config config, HashMap<String,String> users) throws IOException{
         this.messageStoreLimit = config.getMessageLimit();
         this.users = users;
-        this.messageList = new ArrayList<String>(messageStoreLimit);
+        this.messageList = new ArrayList<Message>(messageStoreLimit);
         this.tcpServer = new AsyncTcpServer(this, config.getHost(), config.getPort(), config.getThreadCount());
     }
 
@@ -64,7 +64,7 @@ public class ServerProcessor implements ChatProcessor{
     }
 
 
-    private void storeMessage( String message ){
+    private void storeMessage( Message message ){
         synchronized ( messageList ){
             if ( messageList.size() == messageStoreLimit ){
                 messageList.remove(0);
@@ -97,10 +97,11 @@ public class ServerProcessor implements ChatProcessor{
         }
     }
 
-    public void handleInputMessage(String message, ClientState clientState){
+    public void handleInputMessage(String messageString, ClientState clientState){
+        Message message = (Message) JsonConverter.fromJson(messageString, Message.class);
         storeMessage( message );
-        System.out.println("message" + message);
-        sendMessage( message, clientState.getInstance() );
+        System.out.println("message" + message.toOutStr());
+        sendMessage( messageString, clientState.getInstance() );
     }
 
     public void start(){

@@ -60,14 +60,12 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
 
             readSizeBuffer.flip();
             int size = readSizeBuffer.getInt();
-            System.out.println("Received " + size + " bytes");
 
             ByteBuffer rBuffer = ByteBuffer.allocate(size);
             clientState.setReadBuffer(rBuffer);
 
             clientState.getChannel().read( clientState.getReadBuffer(), clientState, this );
         } else {
-            System.out.println("callback=" + callback);
             ByteBuffer readBuffer = clientState.getReadBuffer();
             if (readBuffer.hasRemaining())
                 clientState.getChannel().read( clientState.getReadBuffer(), clientState, this );
@@ -76,7 +74,6 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
             byte[] readBytes = readBuffer.array();
 
             String message = new String( readBytes, StandardCharsets.UTF_8 );
-            System.out.println(message);
 
             clientState.getReadSizeBuffer().clear();
             clientState.setReadBuffer(null);

@@ -2,6 +2,8 @@ package client;
 
 import handlers.WriteHandler;
 import handlers.ClientState;
+import utils.JsonConverter;
+import utils.Message;
 import utils.MessageWriter;
 
 import java.io.BufferedReader;
@@ -19,6 +21,9 @@ public class UserInputHandler implements Runnable {
     private boolean connected;
     private BufferedReader reader;
 
+    private String author;
+    private String IP;
+
     private final String CLOSE = "@close";
 
     public UserInputHandler(ClientProcessor clientProcessor, AsynchronousSocketChannel channel){
@@ -26,6 +31,14 @@ public class UserInputHandler implements Runnable {
         this.channel = channel;
         this.reader = new BufferedReader( new InputStreamReader( System.in ) );
         this.connected = true;
+    }
+
+    public void setAuthor(String author){
+        this.author = author;
+    }
+
+    public void setIP(String IP){
+        this.IP = IP;
     }
 
     public void run(){
@@ -38,8 +51,9 @@ public class UserInputHandler implements Runnable {
                     connected = false;
                     continue;
                 }
-
-                ClientState clientState = MessageWriter.createClientState( channel, ln);
+                Message message = new Message(author, IP, ln);
+                String messageString = JsonConverter.toJson(message);
+                ClientState clientState = MessageWriter.createClientState( channel, messageString);
                 clientState.getChannel().write( clientState.getWriteBuffer(), clientState, new WriteHandler() );
             }
         } catch (IOException e) {
