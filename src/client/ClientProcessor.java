@@ -77,4 +77,8 @@ public class ClientProcessor implements ChatProcessor{
         }
     }
 
+    public void close(ChannelAndBuffersContainer channelAndBuffersContainer){
+        tcpClient.close();
+    }
+
 }

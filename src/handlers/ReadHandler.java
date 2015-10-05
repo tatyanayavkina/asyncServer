@@ -64,5 +64,6 @@ public class ReadHandler implements CompletionHandler<Integer, ChannelAndBuffers
 
     public void failed(Throwable ex, ChannelAndBuffersContainer channelAndBuffersContainer){
         System.out.printf("Error while reading from client #%02d!%n", channelAndBuffersContainer.getInstance());
+        processor.close(channelAndBuffersContainer);
     }
 }

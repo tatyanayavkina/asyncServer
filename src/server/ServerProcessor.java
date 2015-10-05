@@ -109,4 +109,8 @@ public class ServerProcessor implements ChatProcessor{
     public void start(){
         tcpServer.start();
     }
+
+    public void close(ChannelAndBuffersContainer channelAndBuffersContainer){
+        tcpServer.removeConnection( channelAndBuffersContainer );
+    }
 }
