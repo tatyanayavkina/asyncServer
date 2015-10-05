@@ -25,7 +25,7 @@ public class ConnectionAutoIncrementMap extends HashMap<Integer, ChannelAndBuffe
         this.put(connectionId, channelAndBuffersContainer);
     }
 
-    public Iterable<ChannelAndBuffersContainer> getAllExceptOne(int exceptConnectionId) {
+    public Iterable<ChannelAndBuffersContainer> getAll( ) {
         ArrayList<ChannelAndBuffersContainer> result;
         Set<Entry<Integer, ChannelAndBuffersContainer>> set;
         synchronized (this){
@@ -38,11 +38,7 @@ public class ConnectionAutoIncrementMap extends HashMap<Integer, ChannelAndBuffe
         }
 
         for ( Map.Entry<Integer, ChannelAndBuffersContainer> s : set ) {
-            Integer key = s.getKey();
-
-            if(key != exceptConnectionId){
-                result.add(s.getValue());
-            }
+            result.add(s.getValue());
         }
 
         return result;

@@ -70,7 +70,10 @@ public class ClientProcessor implements ChatProcessor{
 
     public void handleInputMessage(String messageString, ChannelAndBuffersContainer channelAndBuffersContainer){
         Message message = (Message) JsonConverter.fromJson(messageString, Message.class);
-        System.out.println("message" + message.toOutStr());
+        // if we are not message author then print it to console
+        if( !username.equals( message.getAuthor())){
+            System.out.println("message" + message.toOutStr());
+        }
     }
 
 }

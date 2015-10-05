@@ -38,8 +38,8 @@ public class AsyncTcpServer {
         serverChannel.accept(ChannelAndBuffersContainer.newInstance(), new AsyncServerAcceptHandler(serverChannel, serverProcessor));
     }
 
-    public Iterable<ChannelAndBuffersContainer> getAllConnectionsExceptOne(int exceptConnectionId){
-        return connectionsMap.getAllExceptOne(exceptConnectionId);
+    public Iterable<ChannelAndBuffersContainer> getAllConnections(){
+        return connectionsMap.getAll();
     }
 
     public void addConnection (ChannelAndBuffersContainer channelAndBuffersContainer){

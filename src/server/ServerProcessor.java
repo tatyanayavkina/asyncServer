@@ -74,10 +74,10 @@ public class ServerProcessor implements ChatProcessor{
         }
     }
 
-    private void sendMessage(String message, int clientId){
+    private void sendMessage(String message ){
         ChannelAndBuffersContainer bufChannelAndBuffersContainer;
-        //send message to all connected clients except client with id
-        Iterable<ChannelAndBuffersContainer> clientStates = this.tcpServer.getAllConnectionsExceptOne( clientId );
+        //send message to all connected clients
+        Iterable<ChannelAndBuffersContainer> clientStates = this.tcpServer.getAllConnections();
         for ( ChannelAndBuffersContainer channelAndBuffersContainer : clientStates ) {
             bufChannelAndBuffersContainer = MessageWriter.createClientState( channelAndBuffersContainer.getChannel(), message );
             bufChannelAndBuffersContainer.getChannel().write( bufChannelAndBuffersContainer.getWriteBuffer(), bufChannelAndBuffersContainer, new WriteHandler() );
@@ -101,7 +101,7 @@ public class ServerProcessor implements ChatProcessor{
         Message message = (Message) JsonConverter.fromJson(messageString, Message.class);
         storeMessage( message );
         System.out.println("message" + message.toOutStr());
-        sendMessage( messageString, channelAndBuffersContainer.getInstance() );
+        sendMessage( messageString );
     }
 
     public void start(){

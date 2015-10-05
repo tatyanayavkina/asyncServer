@@ -19,6 +19,10 @@ public class Message implements Serializable{
         this.creationTime = LocalDateTime.now();
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
     public String toOutStr(){
         StringBuilder builder = new StringBuilder();
         String output;
