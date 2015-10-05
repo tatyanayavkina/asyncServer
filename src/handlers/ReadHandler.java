@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 /**
  * Created on 15.09.2015.
  */
-public class ReadHandler implements CompletionHandler<Integer, ClientState> {
+public class ReadHandler implements CompletionHandler<Integer, ChannelAndBuffersContainer> {
     private final ChatProcessor processor;
     private String callback;
     private boolean isMessageExchange;
@@ -26,7 +26,7 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
     private Method prepareCallback(){
         Method method = null;
         try {
-            method = processor.getClass().getMethod(callback, String.class, ClientState.class);
+            method = processor.getClass().getMethod(callback, String.class, ChannelAndBuffersContainer.class);
         } catch (SecurityException e) {
             // ...
         } catch (NoSuchMethodException e) {
@@ -35,44 +35,44 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
         return  method;
     }
 
-    public void completed(Integer result, ClientState clientState){
+    public void completed(Integer result, ChannelAndBuffersContainer channelAndBuffersContainer){
         if (result == -1)
         {
             try {
-                clientState.getChannel().close();
+                channelAndBuffersContainer.getChannel().close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return;
         }
 
-        ByteBuffer readSizeBuffer = clientState.getReadSizeBuffer();
+        ByteBuffer readSizeBuffer = channelAndBuffersContainer.getReadSizeBuffer();
 
-        if (clientState.getReadBuffer() == null) {
+        if (channelAndBuffersContainer.getReadBuffer() == null) {
             if (readSizeBuffer.hasRemaining())
-                clientState.getChannel().read( readSizeBuffer, clientState, this );
+                channelAndBuffersContainer.getChannel().read( readSizeBuffer, channelAndBuffersContainer, this );
 
             readSizeBuffer.flip();
             int size = readSizeBuffer.getInt();
             ByteBuffer rBuffer = ByteBuffer.allocate(size);
-            clientState.setReadBuffer(rBuffer);
-            clientState.getChannel().read( rBuffer, clientState, this );
+            channelAndBuffersContainer.setReadBuffer(rBuffer);
+            channelAndBuffersContainer.getChannel().read( rBuffer, channelAndBuffersContainer, this );
         } else {
-            ByteBuffer readBuffer = clientState.getReadBuffer();
+            ByteBuffer readBuffer = channelAndBuffersContainer.getReadBuffer();
             if (readBuffer.hasRemaining())
-                clientState.getChannel().read( readBuffer, clientState, this );
+                channelAndBuffersContainer.getChannel().read( readBuffer, channelAndBuffersContainer, this );
 
             readBuffer.flip();
             byte[] readBytes = readBuffer.array();
             String message = new String( readBytes, StandardCharsets.UTF_8 );
 
             readSizeBuffer.clear();
-            clientState.setReadBuffer(null);
+            channelAndBuffersContainer.setReadBuffer(null);
 
             Method callbackMethod;
             if ( callback != null && ( callbackMethod = prepareCallback() ) != null){
                 try {
-                    callbackMethod.invoke(processor, message, clientState);
+                    callbackMethod.invoke(processor, message, channelAndBuffersContainer);
                 } catch (IllegalArgumentException e) {
 
                 } catch (IllegalAccessException e) {
@@ -83,12 +83,12 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
             }
 
             if ( isMessageExchange ){
-                clientState.getChannel().read(clientState.getReadSizeBuffer(), clientState, this);
+                channelAndBuffersContainer.getChannel().read(channelAndBuffersContainer.getReadSizeBuffer(), channelAndBuffersContainer, this);
             }
         }
     }
 
-    public void failed(Throwable ex, ClientState clientState){
-        System.out.printf("Error while reading from client #%02d!%n", clientState.getInstance());
+    public void failed(Throwable ex, ChannelAndBuffersContainer channelAndBuffersContainer){
+        System.out.printf("Error while reading from client #%02d!%n", channelAndBuffersContainer.getInstance());
     }
 }

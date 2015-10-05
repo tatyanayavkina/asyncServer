@@ -1,6 +1,6 @@
 package utils;
 
-import handlers.ClientState;
+import handlers.ChannelAndBuffersContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Created on 22.09.2015.
  */
-public class ConnectionAutoIncrementMap extends HashMap<Integer, ClientState> {
+public class ConnectionAutoIncrementMap extends HashMap<Integer, ChannelAndBuffersContainer> {
     public int connectionCounter;
 
     public ConnectionAutoIncrementMap() {
@@ -21,23 +21,23 @@ public class ConnectionAutoIncrementMap extends HashMap<Integer, ClientState> {
         return connectionCounter++;
     }
 
-    public void pushConnection(int connectionId, ClientState clientState) {
-        this.put(connectionId, clientState);
+    public void pushConnection(int connectionId, ChannelAndBuffersContainer channelAndBuffersContainer) {
+        this.put(connectionId, channelAndBuffersContainer);
     }
 
-    public Iterable<ClientState> getAllExceptOne(int exceptConnectionId) {
-        ArrayList<ClientState> result;
-        Set<Entry<Integer, ClientState>> set;
+    public Iterable<ChannelAndBuffersContainer> getAllExceptOne(int exceptConnectionId) {
+        ArrayList<ChannelAndBuffersContainer> result;
+        Set<Entry<Integer, ChannelAndBuffersContainer>> set;
         synchronized (this){
             int resultSize = size() - 1;
             if (resultSize < 1)
-                return new ArrayList<ClientState>(0);
+                return new ArrayList<ChannelAndBuffersContainer>(0);
 
-            result = new ArrayList<ClientState>(resultSize);
+            result = new ArrayList<ChannelAndBuffersContainer>(resultSize);
             set = entrySet();
         }
 
-        for ( Map.Entry<Integer, ClientState> s : set ) {
+        for ( Map.Entry<Integer, ChannelAndBuffersContainer> s : set ) {
             Integer key = s.getKey();
 
             if(key != exceptConnectionId){

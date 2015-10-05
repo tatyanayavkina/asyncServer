@@ -1,6 +1,6 @@
 package server;
 
-import handlers.ClientState;
+import handlers.ChannelAndBuffersContainer;
 import handlers.ReadHandler;
 import handlers.WriteHandler;
 import utils.*;
@@ -25,10 +25,10 @@ public class ServerProcessor implements ChatProcessor{
         this.tcpServer = new AsyncTcpServer(this, config.getHost(), config.getPort(), config.getThreadCount());
     }
 
-    private boolean authenticate(String credentialsStr, ClientState clientState) {
+    private boolean authenticate(String credentialsStr, ChannelAndBuffersContainer channelAndBuffersContainer) {
         UserCredentials credentials = (UserCredentials) JsonConverter.fromJson(credentialsStr, UserCredentials.class);
         boolean isAuthenticated = ( credentials != null && isUserRegistered( credentials ) );
-        sendAuthenticationMessage(clientState, isAuthenticated);
+        sendAuthenticationMessage(channelAndBuffersContainer, isAuthenticated);
 
         return isAuthenticated;
     }
@@ -49,7 +49,7 @@ public class ServerProcessor implements ChatProcessor{
         return isRegistered;
     }
 
-    private void sendAuthenticationMessage(ClientState clientState, boolean isAuthenticated){
+    private void sendAuthenticationMessage(ChannelAndBuffersContainer channelAndBuffersContainer, boolean isAuthenticated){
         UtilityMessage utilityMessage;
 
         if ( isAuthenticated ){
@@ -59,8 +59,8 @@ public class ServerProcessor implements ChatProcessor{
         }
 
         String utilityMessageJson = JsonConverter.toJson( utilityMessage );
-        ClientState bufClientState = MessageWriter.createClientState( clientState.getChannel(), utilityMessageJson);
-        bufClientState.getChannel().write( bufClientState.getWriteBuffer(), bufClientState, new WriteHandler());
+        ChannelAndBuffersContainer bufChannelAndBuffersContainer = MessageWriter.createClientState( channelAndBuffersContainer.getChannel(), utilityMessageJson);
+        bufChannelAndBuffersContainer.getChannel().write( bufChannelAndBuffersContainer.getWriteBuffer(), bufChannelAndBuffersContainer, new WriteHandler());
     }
 
 
@@ -75,33 +75,33 @@ public class ServerProcessor implements ChatProcessor{
     }
 
     private void sendMessage(String message, int clientId){
-        ClientState bufClientState;
+        ChannelAndBuffersContainer bufChannelAndBuffersContainer;
         //send message to all connected clients except client with id
-        Iterable<ClientState> clientStates = this.tcpServer.getAllConnectionsExceptOne( clientId );
-        for ( ClientState clientState : clientStates ) {
-            bufClientState = MessageWriter.createClientState( clientState.getChannel(), message );
-            bufClientState.getChannel().write( bufClientState.getWriteBuffer(), bufClientState, new WriteHandler() );
+        Iterable<ChannelAndBuffersContainer> clientStates = this.tcpServer.getAllConnectionsExceptOne( clientId );
+        for ( ChannelAndBuffersContainer channelAndBuffersContainer : clientStates ) {
+            bufChannelAndBuffersContainer = MessageWriter.createClientState( channelAndBuffersContainer.getChannel(), message );
+            bufChannelAndBuffersContainer.getChannel().write( bufChannelAndBuffersContainer.getWriteBuffer(), bufChannelAndBuffersContainer, new WriteHandler() );
         }
     }
 
-    public void handleNewClient(ClientState clientState){
+    public void handleNewClient(ChannelAndBuffersContainer channelAndBuffersContainer){
         ReadHandler readHandler = new ReadHandler( false, this, "handleAuthorization" );
-        clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, readHandler );
+        channelAndBuffersContainer.getChannel().read( channelAndBuffersContainer.getReadSizeBuffer(), channelAndBuffersContainer, readHandler );
     }
 
-    public void handleAuthorization(String credentials, ClientState clientState){
-        if ( authenticate( credentials, clientState ) ){
-            tcpServer.addConnection( clientState );
+    public void handleAuthorization(String credentials, ChannelAndBuffersContainer channelAndBuffersContainer){
+        if ( authenticate( credentials, channelAndBuffersContainer) ){
+            tcpServer.addConnection(channelAndBuffersContainer);
             ReadHandler readHandler = new ReadHandler( true, this, "handleInputMessage" );
-            clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, readHandler );
+            channelAndBuffersContainer.getChannel().read( channelAndBuffersContainer.getReadSizeBuffer(), channelAndBuffersContainer, readHandler );
         }
     }
 
-    public void handleInputMessage(String messageString, ClientState clientState){
+    public void handleInputMessage(String messageString, ChannelAndBuffersContainer channelAndBuffersContainer){
         Message message = (Message) JsonConverter.fromJson(messageString, Message.class);
         storeMessage( message );
         System.out.println("message" + message.toOutStr());
-        sendMessage( messageString, clientState.getInstance() );
+        sendMessage( messageString, channelAndBuffersContainer.getInstance() );
     }
 
     public void start(){

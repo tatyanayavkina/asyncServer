@@ -2,7 +2,7 @@ package client;
 
 import handlers.ReadHandler;
 import handlers.WriteHandler;
-import handlers.ClientState;
+import handlers.ChannelAndBuffersContainer;
 import utils.*;
 
 import java.io.IOException;
@@ -36,39 +36,39 @@ public class ClientProcessor implements ChatProcessor{
 
     public void handleConnection(AsynchronousSocketChannel channel){
         sendAuthorizationMessage(channel);
-        ClientState clientState = new ClientState( channel );
+        ChannelAndBuffersContainer channelAndBuffersContainer = new ChannelAndBuffersContainer( channel );
         ReadHandler readHandler = new ReadHandler( false, this, "handleAuthorizationMessage");
-        clientState.getChannel().read(clientState.getReadSizeBuffer(), clientState, readHandler);
+        channelAndBuffersContainer.getChannel().read(channelAndBuffersContainer.getReadSizeBuffer(), channelAndBuffersContainer, readHandler);
     }
 
 
     private void sendAuthorizationMessage(AsynchronousSocketChannel channel){
         UserCredentials credentials = new UserCredentials( username, password );
         String jsonCredentials = JsonConverter.toJson( credentials );
-        ClientState clientState = MessageWriter.createClientState( channel, jsonCredentials );
-        clientState.getChannel().write(clientState.getWriteBuffer(), clientState, new WriteHandler());
+        ChannelAndBuffersContainer channelAndBuffersContainer = MessageWriter.createClientState( channel, jsonCredentials );
+        channelAndBuffersContainer.getChannel().write(channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler());
     }
 
-    public void handleAuthorizationMessage(String message, ClientState clientState){
+    public void handleAuthorizationMessage(String message, ChannelAndBuffersContainer channelAndBuffersContainer){
 
         UtilityMessage utilityMessage = (UtilityMessage) JsonConverter.fromJson( message, UtilityMessage.class );
         UtilityMessage.StatusCodes statusCode = utilityMessage.getCode();
         System.out.println(statusCode.getDescription());
 
         if ( statusCode == UtilityMessage.StatusCodes.AUTHORIZED){
-            UserInputHandler inputHandler = new UserInputHandler(this, clientState.getChannel());
+            UserInputHandler inputHandler = new UserInputHandler(this, channelAndBuffersContainer.getChannel());
             inputHandler.setAuthor(username);
             inputHandler.setIP(IP);
             new Thread(inputHandler).start();
             ReadHandler readHandler = new ReadHandler( true, this, "printReceivedMessage");
-            clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, readHandler );
+            channelAndBuffersContainer.getChannel().read( channelAndBuffersContainer.getReadSizeBuffer(), channelAndBuffersContainer, readHandler );
         } else {
             stop();
         }
 
     }
 
-    public void printReceivedMessage (String messageString, ClientState clientState){
+    public void printReceivedMessage (String messageString, ChannelAndBuffersContainer channelAndBuffersContainer){
         Message message = (Message) JsonConverter.fromJson(messageString, Message.class);
         System.out.println("message" + message.toOutStr());
     }

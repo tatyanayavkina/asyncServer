@@ -1,7 +1,7 @@
 package client;
 
 import handlers.WriteHandler;
-import handlers.ClientState;
+import handlers.ChannelAndBuffersContainer;
 import utils.JsonConverter;
 import utils.Message;
 import utils.MessageWriter;
@@ -53,8 +53,8 @@ public class UserInputHandler implements Runnable {
                 }
                 Message message = new Message(author, IP, ln);
                 String messageString = JsonConverter.toJson(message);
-                ClientState clientState = MessageWriter.createClientState( channel, messageString);
-                clientState.getChannel().write( clientState.getWriteBuffer(), clientState, new WriteHandler() );
+                ChannelAndBuffersContainer channelAndBuffersContainer = MessageWriter.createClientState( channel, messageString);
+                channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler() );
             }
         } catch (IOException e) {
 

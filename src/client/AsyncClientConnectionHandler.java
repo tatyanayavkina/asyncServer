@@ -1,13 +1,13 @@
 package client;
 
-import handlers.ClientState;
+import handlers.ChannelAndBuffersContainer;
 
 import java.nio.channels.CompletionHandler;
 
 /**
  * Created on 15.09.2015.
  */
-public class AsyncClientConnectionHandler implements CompletionHandler<Void, ClientState>{
+public class AsyncClientConnectionHandler implements CompletionHandler<Void, ChannelAndBuffersContainer>{
 //    private UserInputHandler inputHandler;
     private final ClientProcessor clientProcessor;
 
@@ -17,13 +17,13 @@ public class AsyncClientConnectionHandler implements CompletionHandler<Void, Cli
 
 
     @Override
-    public void completed(Void result, ClientState clientState) {
+    public void completed(Void result, ChannelAndBuffersContainer channelAndBuffersContainer) {
         //handle connection
-        clientProcessor.handleConnection( clientState.getChannel() );
+        clientProcessor.handleConnection( channelAndBuffersContainer.getChannel() );
     }
 
     @Override
-    public void failed(Throwable exc, ClientState clientState) {
+    public void failed(Throwable exc, ChannelAndBuffersContainer channelAndBuffersContainer) {
         System.out.println("Connect fault!");
         exc.printStackTrace();
     }

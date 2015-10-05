@@ -1,6 +1,6 @@
 package server;
 
-import handlers.ClientState;
+import handlers.ChannelAndBuffersContainer;
 import utils.ConnectionAutoIncrementMap;
 
 import java.io.IOException;
@@ -35,22 +35,22 @@ public class AsyncTcpServer {
     }
 
     private void accept(){
-        serverChannel.accept(ClientState.newInstance(), new AsyncServerAcceptHandler(serverChannel, serverProcessor));
+        serverChannel.accept(ChannelAndBuffersContainer.newInstance(), new AsyncServerAcceptHandler(serverChannel, serverProcessor));
     }
 
-    public Iterable<ClientState> getAllConnectionsExceptOne(int exceptConnectionId){
+    public Iterable<ChannelAndBuffersContainer> getAllConnectionsExceptOne(int exceptConnectionId){
         return connectionsMap.getAllExceptOne(exceptConnectionId);
     }
 
-    public void addConnection (ClientState clientState){
+    public void addConnection (ChannelAndBuffersContainer channelAndBuffersContainer){
         synchronized (connectionsMap){
-            connectionsMap.pushConnection( clientState.getInstance(), clientState);
+            connectionsMap.pushConnection( channelAndBuffersContainer.getInstance(), channelAndBuffersContainer);
         }
     }
 
-    public void removeConnection (ClientState clientState){
+    public void removeConnection (ChannelAndBuffersContainer channelAndBuffersContainer){
         synchronized (connectionsMap){
-            connectionsMap.remove(clientState.getInstance());
+            connectionsMap.remove(channelAndBuffersContainer.getInstance());
         }
     }
 
