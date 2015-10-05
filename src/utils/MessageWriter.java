@@ -16,6 +16,7 @@ public class MessageWriter {
         ByteBuffer writeBuffer = ByteBuffer.allocate(messageBytes.length + 4);
         writeBuffer.putInt(messageBytes.length);
         writeBuffer.put(messageBytes);
+        writeBuffer.flip();
 
         return writeBuffer;
     }
@@ -24,7 +25,6 @@ public class MessageWriter {
         ByteBuffer writeBuffer = createWriteBuffer( message );
         ClientState clientState = new ClientState( channel );
         clientState.setWriteBuffer( writeBuffer );
-        clientState.getWriteBuffer().flip();
 
         return clientState;
     }

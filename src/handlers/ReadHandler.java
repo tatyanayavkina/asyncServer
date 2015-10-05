@@ -50,23 +50,23 @@ public class ReadHandler implements CompletionHandler<Integer, ClientState> {
 
         if (clientState.getReadBuffer() == null) {
             if (readSizeBuffer.hasRemaining())
-                clientState.getChannel().read( clientState.getReadSizeBuffer(), clientState, this );
+                clientState.getChannel().read( readSizeBuffer, clientState, this );
 
             readSizeBuffer.flip();
             int size = readSizeBuffer.getInt();
             ByteBuffer rBuffer = ByteBuffer.allocate(size);
             clientState.setReadBuffer(rBuffer);
-            clientState.getChannel().read( clientState.getReadBuffer(), clientState, this );
+            clientState.getChannel().read( rBuffer, clientState, this );
         } else {
             ByteBuffer readBuffer = clientState.getReadBuffer();
             if (readBuffer.hasRemaining())
-                clientState.getChannel().read( clientState.getReadBuffer(), clientState, this );
+                clientState.getChannel().read( readBuffer, clientState, this );
 
             readBuffer.flip();
             byte[] readBytes = readBuffer.array();
             String message = new String( readBytes, StandardCharsets.UTF_8 );
 
-            clientState.getReadSizeBuffer().clear();
+            readSizeBuffer.clear();
             clientState.setReadBuffer(null);
 
             Method callbackMethod;
