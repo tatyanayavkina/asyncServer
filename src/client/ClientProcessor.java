@@ -37,7 +37,7 @@ public class ClientProcessor implements ChatProcessor{
     public void handleConnection(AsynchronousSocketChannel channel){
         sendAuthorizationMessage(channel);
         ChannelAndBuffersContainer channelAndBuffersContainer = new ChannelAndBuffersContainer( channel );
-        ReadHandler readHandler = new ReadHandler( false, this, "handleAuthorizationMessage");
+        ReadHandler readHandler = new ReadHandler( false, this );
         channelAndBuffersContainer.getChannel().read(channelAndBuffersContainer.getReadSizeBuffer(), channelAndBuffersContainer, readHandler);
     }
 
@@ -49,7 +49,7 @@ public class ClientProcessor implements ChatProcessor{
         channelAndBuffersContainer.getChannel().write(channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler());
     }
 
-    public void handleAuthorizationMessage(String message, ChannelAndBuffersContainer channelAndBuffersContainer){
+    public void handleAuthorization(String message, ChannelAndBuffersContainer channelAndBuffersContainer){
 
         UtilityMessage utilityMessage = (UtilityMessage) JsonConverter.fromJson( message, UtilityMessage.class );
         UtilityMessage.StatusCodes statusCode = utilityMessage.getCode();
@@ -60,7 +60,7 @@ public class ClientProcessor implements ChatProcessor{
             inputHandler.setAuthor(username);
             inputHandler.setIP(IP);
             new Thread(inputHandler).start();
-            ReadHandler readHandler = new ReadHandler( true, this, "printReceivedMessage");
+            ReadHandler readHandler = new ReadHandler( true, this );
             channelAndBuffersContainer.getChannel().read( channelAndBuffersContainer.getReadSizeBuffer(), channelAndBuffersContainer, readHandler );
         } else {
             stop();
@@ -68,7 +68,7 @@ public class ClientProcessor implements ChatProcessor{
 
     }
 
-    public void printReceivedMessage (String messageString, ChannelAndBuffersContainer channelAndBuffersContainer){
+    public void handleInputMessage(String messageString, ChannelAndBuffersContainer channelAndBuffersContainer){
         Message message = (Message) JsonConverter.fromJson(messageString, Message.class);
         System.out.println("message" + message.toOutStr());
     }

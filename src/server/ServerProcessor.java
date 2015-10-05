@@ -85,14 +85,14 @@ public class ServerProcessor implements ChatProcessor{
     }
 
     public void handleNewClient(ChannelAndBuffersContainer channelAndBuffersContainer){
-        ReadHandler readHandler = new ReadHandler( false, this, "handleAuthorization" );
+        ReadHandler readHandler = new ReadHandler( false, this );
         channelAndBuffersContainer.getChannel().read( channelAndBuffersContainer.getReadSizeBuffer(), channelAndBuffersContainer, readHandler );
     }
 
     public void handleAuthorization(String credentials, ChannelAndBuffersContainer channelAndBuffersContainer){
         if ( authenticate( credentials, channelAndBuffersContainer) ){
             tcpServer.addConnection(channelAndBuffersContainer);
-            ReadHandler readHandler = new ReadHandler( true, this, "handleInputMessage" );
+            ReadHandler readHandler = new ReadHandler( true, this );
             channelAndBuffersContainer.getChannel().read( channelAndBuffersContainer.getReadSizeBuffer(), channelAndBuffersContainer, readHandler );
         }
     }

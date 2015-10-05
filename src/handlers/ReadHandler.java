@@ -14,26 +14,14 @@ import java.lang.reflect.Method;
  */
 public class ReadHandler implements CompletionHandler<Integer, ChannelAndBuffersContainer> {
     private final ChatProcessor processor;
-    private String callback;
-    private boolean isMessageExchange;
+    private boolean isAuthorized;
 
-    public ReadHandler(boolean isMessageExchange, ChatProcessor processor, String callback){
-        this.isMessageExchange = isMessageExchange;
+    public ReadHandler(boolean isAuthorized, ChatProcessor processor){
+        this.isAuthorized = isAuthorized;
         this.processor = processor;
-        this.callback = callback;
     }
 
-    private Method prepareCallback(){
-        Method method = null;
-        try {
-            method = processor.getClass().getMethod(callback, String.class, ChannelAndBuffersContainer.class);
-        } catch (SecurityException e) {
-            // ...
-        } catch (NoSuchMethodException e) {
-            // ...
-        }
-        return  method;
-    }
+
 
     public void completed(Integer result, ChannelAndBuffersContainer channelAndBuffersContainer){
         if (result == -1)
@@ -69,21 +57,11 @@ public class ReadHandler implements CompletionHandler<Integer, ChannelAndBuffers
             readSizeBuffer.clear();
             channelAndBuffersContainer.setReadBuffer(null);
 
-            Method callbackMethod;
-            if ( callback != null && ( callbackMethod = prepareCallback() ) != null){
-                try {
-                    callbackMethod.invoke(processor, message, channelAndBuffersContainer);
-                } catch (IllegalArgumentException e) {
-
-                } catch (IllegalAccessException e) {
-
-                } catch (InvocationTargetException e) {
-
-                }
-            }
-
-            if ( isMessageExchange ){
+            if (isAuthorized){
+                processor.handleInputMessage( message, channelAndBuffersContainer);
                 channelAndBuffersContainer.getChannel().read(channelAndBuffersContainer.getReadSizeBuffer(), channelAndBuffersContainer, this);
+            } else {
+                processor.handleAuthorization( message, channelAndBuffersContainer);
             }
         }
     }
