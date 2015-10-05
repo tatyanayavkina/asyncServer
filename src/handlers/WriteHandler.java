@@ -13,6 +13,7 @@ public class WriteHandler implements CompletionHandler<Integer, ChannelAndBuffer
         if ( channelAndBuffersContainer.getWriteBuffer().hasRemaining() ) {
             channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, this );
         }
+        channelAndBuffersContainer.setWriteBuffer(null);
     }
 
     @Override

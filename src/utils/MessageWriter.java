@@ -1,9 +1,6 @@
 package utils;
 
-import handlers.ChannelAndBuffersContainer;
-
 import java.nio.ByteBuffer;
-import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -11,7 +8,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class MessageWriter {
 
-    private static ByteBuffer createWriteBuffer( String message ){
+    public static ByteBuffer createWriteBuffer( String message ){
         byte[] messageBytes = message.getBytes( StandardCharsets.UTF_8 );
         ByteBuffer writeBuffer = ByteBuffer.allocate(messageBytes.length + 4);
         writeBuffer.putInt(messageBytes.length);
@@ -19,13 +16,5 @@ public class MessageWriter {
         writeBuffer.flip();
 
         return writeBuffer;
-    }
-
-    public static ChannelAndBuffersContainer createClientState ( AsynchronousSocketChannel channel, String message ){
-        ByteBuffer writeBuffer = createWriteBuffer( message );
-        ChannelAndBuffersContainer channelAndBuffersContainer = new ChannelAndBuffersContainer( channel );
-        channelAndBuffersContainer.setWriteBuffer(writeBuffer);
-
-        return channelAndBuffersContainer;
     }
 }

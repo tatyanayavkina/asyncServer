@@ -19,7 +19,7 @@ public class AsyncClientConnectionHandler implements CompletionHandler<Void, Cha
     @Override
     public void completed(Void result, ChannelAndBuffersContainer channelAndBuffersContainer) {
         //handle connection
-        clientProcessor.handleConnection( channelAndBuffersContainer.getChannel() );
+        clientProcessor.handleConnection( channelAndBuffersContainer );
     }
 
     @Override

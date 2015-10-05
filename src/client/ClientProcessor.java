@@ -7,6 +7,7 @@ import utils.*;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 
 /**
@@ -34,18 +35,18 @@ public class ClientProcessor implements ChatProcessor{
         tcpClient.close();
     }
 
-    public void handleConnection(AsynchronousSocketChannel channel){
-        sendAuthorizationMessage(channel);
-        ChannelAndBuffersContainer channelAndBuffersContainer = new ChannelAndBuffersContainer( channel );
+    public void handleConnection(ChannelAndBuffersContainer channelAndBuffersContainer){
+        sendAuthorizationMessage(channelAndBuffersContainer);
         ReadHandler readHandler = new ReadHandler( false, this );
         channelAndBuffersContainer.getChannel().read(channelAndBuffersContainer.getReadSizeBuffer(), channelAndBuffersContainer, readHandler);
     }
 
 
-    private void sendAuthorizationMessage(AsynchronousSocketChannel channel){
+    private void sendAuthorizationMessage(ChannelAndBuffersContainer channelAndBuffersContainer){
         UserCredentials credentials = new UserCredentials( username, password );
-        String jsonCredentials = JsonConverter.toJson( credentials );
-        ChannelAndBuffersContainer channelAndBuffersContainer = MessageWriter.createClientState( channel, jsonCredentials );
+        String jsonCredentials = JsonConverter.toJson(credentials);
+        ByteBuffer writeBuffer = MessageWriter.createWriteBuffer(jsonCredentials);
+        channelAndBuffersContainer.setWriteBuffer( writeBuffer );
         channelAndBuffersContainer.getChannel().write(channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler());
     }
 
@@ -56,7 +57,7 @@ public class ClientProcessor implements ChatProcessor{
         System.out.println(statusCode.getDescription());
 
         if ( statusCode == UtilityMessage.StatusCodes.AUTHORIZED){
-            UserInputHandler inputHandler = new UserInputHandler(this, channelAndBuffersContainer.getChannel());
+            UserInputHandler inputHandler = new UserInputHandler(this, channelAndBuffersContainer);
             inputHandler.setAuthor(username);
             inputHandler.setIP(IP);
             new Thread(inputHandler).start();

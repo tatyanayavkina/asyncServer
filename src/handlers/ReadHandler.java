@@ -19,8 +19,6 @@ public class ReadHandler implements CompletionHandler<Integer, ChannelAndBuffers
         this.processor = processor;
     }
 
-
-
     public void completed(Integer result, ChannelAndBuffersContainer channelAndBuffersContainer){
         if (result == -1)
         {

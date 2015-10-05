@@ -9,15 +9,14 @@ import utils.MessageWriter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.channels.AsynchronousSocketChannel;
-
+import java.nio.ByteBuffer;
 
 /**
  * Created on 18.09.2015.
  */
 public class UserInputHandler implements Runnable {
     private ClientProcessor clientProcessor;
-    private AsynchronousSocketChannel channel;
+    private ChannelAndBuffersContainer channelAndBuffersContainer;
     private boolean connected;
     private BufferedReader reader;
 
@@ -26,9 +25,9 @@ public class UserInputHandler implements Runnable {
 
     private final String CLOSE = "@close";
 
-    public UserInputHandler(ClientProcessor clientProcessor, AsynchronousSocketChannel channel){
+    public UserInputHandler(ClientProcessor clientProcessor, ChannelAndBuffersContainer channelAndBuffersContainer){
         this.clientProcessor = clientProcessor;
-        this.channel = channel;
+        this.channelAndBuffersContainer = channelAndBuffersContainer;
         this.reader = new BufferedReader( new InputStreamReader( System.in ) );
         this.connected = true;
     }
@@ -53,7 +52,8 @@ public class UserInputHandler implements Runnable {
                 }
                 Message message = new Message(author, IP, ln);
                 String messageString = JsonConverter.toJson(message);
-                ChannelAndBuffersContainer channelAndBuffersContainer = MessageWriter.createClientState( channel, messageString);
+                ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( messageString );
+                channelAndBuffersContainer.setWriteBuffer( writeBuffer );
                 channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler() );
             }
         } catch (IOException e) {

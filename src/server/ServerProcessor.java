@@ -6,6 +6,7 @@ import handlers.WriteHandler;
 import utils.*;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -58,9 +59,10 @@ public class ServerProcessor implements ChatProcessor{
             utilityMessage = new UtilityMessage( UtilityMessage.StatusCodes.NONAUTHORIZED );
         }
 
-        String utilityMessageJson = JsonConverter.toJson( utilityMessage );
-        ChannelAndBuffersContainer bufChannelAndBuffersContainer = MessageWriter.createClientState( channelAndBuffersContainer.getChannel(), utilityMessageJson);
-        bufChannelAndBuffersContainer.getChannel().write( bufChannelAndBuffersContainer.getWriteBuffer(), bufChannelAndBuffersContainer, new WriteHandler());
+        String utilityMessageJson = JsonConverter.toJson(utilityMessage);
+        ByteBuffer writeBuffer = MessageWriter.createWriteBuffer(utilityMessageJson);
+        channelAndBuffersContainer.setWriteBuffer( writeBuffer );
+        channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler());
     }
 
 
@@ -75,12 +77,12 @@ public class ServerProcessor implements ChatProcessor{
     }
 
     private void sendMessage(String message ){
-        ChannelAndBuffersContainer bufChannelAndBuffersContainer;
         //send message to all connected clients
         Iterable<ChannelAndBuffersContainer> clientStates = this.tcpServer.getAllConnections();
         for ( ChannelAndBuffersContainer channelAndBuffersContainer : clientStates ) {
-            bufChannelAndBuffersContainer = MessageWriter.createClientState( channelAndBuffersContainer.getChannel(), message );
-            bufChannelAndBuffersContainer.getChannel().write( bufChannelAndBuffersContainer.getWriteBuffer(), bufChannelAndBuffersContainer, new WriteHandler() );
+            ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( message );
+            channelAndBuffersContainer.setWriteBuffer( writeBuffer );
+            channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler() );
         }
     }
 
