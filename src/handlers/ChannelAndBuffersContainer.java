@@ -15,6 +15,8 @@ public class ChannelAndBuffersContainer {
     private ByteBuffer readBuffer;
     private ByteBuffer writeBuffer;
     private boolean readyToWrite;
+    private int lastSendedMessageIndex;
+    private int firstUnsendedMessageIndex;
 
     private AsynchronousSocketChannel channel;
 
@@ -54,6 +56,10 @@ public class ChannelAndBuffersContainer {
         this.readyToWrite = readyToWrite;
     }
 
+    public void setLastSendedMessageIndex(int lastSendedMessageIndex){
+        this.lastSendedMessageIndex = lastSendedMessageIndex;
+    }
+
     public AsynchronousSocketChannel getChannel()
     {
         return channel;
@@ -76,6 +82,10 @@ public class ChannelAndBuffersContainer {
 
     public boolean getReadyToWrite(){
         return readyToWrite;
+    }
+
+    public int getLastSendedMessageIndex(){
+        return lastSendedMessageIndex;
     }
 
     public ByteBuffer getReadSizeBuffer(){
