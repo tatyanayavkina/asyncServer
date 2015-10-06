@@ -11,6 +11,7 @@ public class Message implements Serializable{
     private String IP;
     private LocalDateTime creationTime;
     private String content;
+    private int id;
 
     public Message(String author, String IP, String content){
         this.author = author;
@@ -21,6 +22,14 @@ public class Message implements Serializable{
 
     public String getAuthor() {
         return author;
+    }
+
+    public int getId(){
+        return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
     }
 
     public String toOutStr(){

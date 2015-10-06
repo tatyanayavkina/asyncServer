@@ -2,6 +2,6 @@
 <params>
     <host>localhost</host>
     <port>9999</port>
-    <messagelimit>10</messagelimit>
+    <messagelimit>1000</messagelimit>
     <threadcount>10</threadcount>
 </params>

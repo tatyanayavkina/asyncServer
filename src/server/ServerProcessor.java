@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created on 21.09.2015.
@@ -19,11 +20,14 @@ public class ServerProcessor implements ChatProcessor{
     private final ArrayList<Message> messageList;
     private AsyncTcpServer tcpServer;
 
+    private AtomicInteger messageCounter;
+
     public ServerProcessor(Config config, HashMap<String,String> users) throws IOException{
         this.messageStoreLimit = config.getMessageLimit();
         this.users = users;
         this.messageList = new ArrayList<Message>(messageStoreLimit);
         this.tcpServer = new AsyncTcpServer(this, config.getHost(), config.getPort(), config.getThreadCount());
+        this.messageCounter = new AtomicInteger();
     }
 
     private boolean authenticate(String credentialsStr, ChannelAndBuffersContainer channelAndBuffersContainer) {
@@ -76,11 +80,13 @@ public class ServerProcessor implements ChatProcessor{
         }
     }
 
-    private void sendMessage(String message ){
+    private void sendMessage(Message message ){
+        ArrayList<Message> messageArrayList = new ArrayList<Message>();
+        messageArrayList.add( message );
         //send message to all connected clients
-        Iterable<ChannelAndBuffersContainer> clientStates = this.tcpServer.getAllConnections();
-        for ( ChannelAndBuffersContainer channelAndBuffersContainer : clientStates ) {
-            ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( message );
+        Iterable<ChannelAndBuffersContainer> channelAndBuffersContainers = this.tcpServer.getAllConnections();
+        for ( ChannelAndBuffersContainer channelAndBuffersContainer : channelAndBuffersContainers ) {
+            ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( messageArrayList );
             channelAndBuffersContainer.setWriteBuffer( writeBuffer );
             channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler() );
         }
@@ -100,13 +106,16 @@ public class ServerProcessor implements ChatProcessor{
     }
 
     public void handleInputMessage(String messageListString, ChannelAndBuffersContainer channelAndBuffersContainer){
-        ArrayList<Message> messageList = JsonConverter.fromJsonToList(messageListString);
-        for( Message message: messageList ){
-            storeMessage( message );
+        ArrayList<Message> messageArrayList = JsonConverter.fromJsonToList(messageListString);
+        for( Message message: messageArrayList ){
+            int id = messageCounter.incrementAndGet();
+            message.setId(id);
+            storeMessage(message);
+            sendMessage( message );
             System.out.println("message" + message.toOutStr());
         }
-
-        sendMessage( messageListString );
+//
+//        sendMessage( messageListString );
     }
 
     public void start(){

@@ -54,8 +54,7 @@ public class UserInputHandler implements Runnable {
                 Message message = new Message(author, IP, ln);
                 ArrayList<Message> messageList = new ArrayList<Message>();
                 messageList.add( message );
-                String messageListString = JsonConverter.toJson( messageList );
-                ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( messageListString );
+                ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( messageList );
                 channelAndBuffersContainer.setWriteBuffer( writeBuffer );
                 channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler() );
             }
