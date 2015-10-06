@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 /**
  * Created on 18.09.2015.
@@ -51,8 +52,10 @@ public class UserInputHandler implements Runnable {
                     continue;
                 }
                 Message message = new Message(author, IP, ln);
-                String messageString = JsonConverter.toJson(message);
-                ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( messageString );
+                ArrayList<Message> messageList = new ArrayList<Message>();
+                messageList.add( message );
+                String messageListString = JsonConverter.toJson( messageList );
+                ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( messageListString );
                 channelAndBuffersContainer.setWriteBuffer( writeBuffer );
                 channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler() );
             }

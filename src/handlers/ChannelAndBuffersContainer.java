@@ -14,6 +14,7 @@ public class ChannelAndBuffersContainer {
     private final ByteBuffer readSizeBuffer;
     private ByteBuffer readBuffer;
     private ByteBuffer writeBuffer;
+    private boolean readyToWrite;
 
     private AsynchronousSocketChannel channel;
 
@@ -49,6 +50,10 @@ public class ChannelAndBuffersContainer {
         this.writeBuffer = writeBuffer;
     }
 
+    public void setReadyToWrite(boolean readyToWrite){
+        this.readyToWrite = readyToWrite;
+    }
+
     public AsynchronousSocketChannel getChannel()
     {
         return channel;
@@ -67,6 +72,10 @@ public class ChannelAndBuffersContainer {
     public int getInstance()
     {
         return instance;
+    }
+
+    public boolean getReadyToWrite(){
+        return readyToWrite;
     }
 
     public ByteBuffer getReadSizeBuffer(){

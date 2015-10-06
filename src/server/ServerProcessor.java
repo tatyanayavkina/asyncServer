@@ -99,11 +99,14 @@ public class ServerProcessor implements ChatProcessor{
         }
     }
 
-    public void handleInputMessage(String messageString, ChannelAndBuffersContainer channelAndBuffersContainer){
-        Message message = (Message) JsonConverter.fromJson(messageString, Message.class);
-        storeMessage( message );
-        System.out.println("message" + message.toOutStr());
-        sendMessage( messageString );
+    public void handleInputMessage(String messageListString, ChannelAndBuffersContainer channelAndBuffersContainer){
+        ArrayList<Message> messageList = JsonConverter.fromJsonToList(messageListString);
+        for( Message message: messageList ){
+            storeMessage( message );
+            System.out.println("message" + message.toOutStr());
+        }
+
+        sendMessage( messageListString );
     }
 
     public void start(){
