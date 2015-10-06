@@ -86,9 +86,15 @@ public class ServerProcessor implements ChatProcessor{
         //send message to all connected clients
         Iterable<ChannelAndBuffersContainer> channelAndBuffersContainers = this.tcpServer.getAllConnections();
         for ( ChannelAndBuffersContainer channelAndBuffersContainer : channelAndBuffersContainers ) {
-            ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( messageArrayList );
-            channelAndBuffersContainer.setWriteBuffer( writeBuffer );
-            channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler() );
+            synchronized(channelAndBuffersContainer){
+                if ( channelAndBuffersContainer. getReadyToWrite() ){
+                    channelAndBuffersContainer.setLastSendedMessageIndex( message.getId() );
+                    ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( messageArrayList );
+                    channelAndBuffersContainer.setWriteBuffer( writeBuffer );
+                    channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler() );
+                }
+
+            }
         }
     }
 
@@ -114,8 +120,6 @@ public class ServerProcessor implements ChatProcessor{
             sendMessage( message );
             System.out.println("message" + message.toOutStr());
         }
-//
-//        sendMessage( messageListString );
     }
 
     public void start(){

@@ -21,7 +21,7 @@ public class AsyncServerAcceptHandler implements CompletionHandler<AsynchronousS
     @Override
     public void completed( AsynchronousSocketChannel channel,  ChannelAndBuffersContainer channelAndBuffersContainer) {
         // accept next connection
-        serverChannel.accept(ChannelAndBuffersContainer.newInstance(), this);
+        serverChannel.accept(new ChannelAndBuffersContainer(), this);
         // init channel
         channelAndBuffersContainer.initChannel(channel);
         // handle this connection

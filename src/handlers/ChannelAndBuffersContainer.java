@@ -8,33 +8,22 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created on 15.09.2015.
  */
 public class ChannelAndBuffersContainer {
-    private static final AtomicInteger counter = new AtomicInteger();
-
-    private final int instance;
+    private  int instance;
     private final ByteBuffer readSizeBuffer;
     private ByteBuffer readBuffer;
     private ByteBuffer writeBuffer;
     private boolean readyToWrite;
     private int lastSendedMessageIndex;
-    private int firstUnsendedMessageIndex;
 
     private AsynchronousSocketChannel channel;
 
-    private ChannelAndBuffersContainer(final int instance)
-    {
+
+    public ChannelAndBuffersContainer(){
+        this.readSizeBuffer = ByteBuffer.allocate(4);
+    }
+
+    public void setInstance(int instance){
         this.instance = instance;
-        this.readSizeBuffer = ByteBuffer.allocate(4);
-    }
-
-    public ChannelAndBuffersContainer(AsynchronousSocketChannel asc){
-        this.instance = -1;
-        this.channel = asc;
-        this.readSizeBuffer = ByteBuffer.allocate(4);
-    }
-
-    public static ChannelAndBuffersContainer newInstance()
-    {
-        return new ChannelAndBuffersContainer(counter.getAndIncrement());
     }
 
     public ChannelAndBuffersContainer initChannel(AsynchronousSocketChannel asc)

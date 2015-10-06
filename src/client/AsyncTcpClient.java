@@ -21,14 +21,16 @@ public class AsyncTcpClient {
     public AsyncTcpClient(String host, int port, ClientProcessor clientProcessor) throws IOException{
         this.host = host;
         this.port = port;
-        this.group = AsynchronousChannelGroup.withFixedThreadPool(2, Executors.defaultThreadFactory());
+        this.group = AsynchronousChannelGroup.withFixedThreadPool( 2, Executors.defaultThreadFactory() );
         this.channel = AsynchronousSocketChannel.open(this.group);
         this.clientProcessor = clientProcessor;
     }
 
     public void connect(){
-        ChannelAndBuffersContainer channelAndBuffersContainer = new ChannelAndBuffersContainer( channel );
-        channel.connect(new InetSocketAddress(host, port), channelAndBuffersContainer, new AsyncClientConnectionHandler(this.clientProcessor) );
+        ChannelAndBuffersContainer channelAndBuffersContainer = new ChannelAndBuffersContainer( );
+        channelAndBuffersContainer.setInstance(0);
+        channelAndBuffersContainer.initChannel( channel );
+        channel.connect( new InetSocketAddress( host, port ), channelAndBuffersContainer, new AsyncClientConnectionHandler( this.clientProcessor ) );
     }
 
     public void close(){

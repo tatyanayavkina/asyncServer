@@ -35,7 +35,7 @@ public class AsyncTcpServer {
     }
 
     private void accept(){
-        serverChannel.accept(ChannelAndBuffersContainer.newInstance(), new AsyncServerAcceptHandler(serverChannel, serverProcessor));
+        serverChannel.accept(new ChannelAndBuffersContainer(), new AsyncServerAcceptHandler(serverChannel, serverProcessor));
     }
 
     public Iterable<ChannelAndBuffersContainer> getAllConnections(){
@@ -44,7 +44,9 @@ public class AsyncTcpServer {
 
     public void addConnection (ChannelAndBuffersContainer channelAndBuffersContainer){
         synchronized (connectionsMap){
-            connectionsMap.pushConnection( channelAndBuffersContainer.getInstance(), channelAndBuffersContainer);
+            int instance = connectionsMap.getNextId();
+            channelAndBuffersContainer.setInstance(instance);
+            connectionsMap.pushConnection( instance, channelAndBuffersContainer);
         }
     }
 
