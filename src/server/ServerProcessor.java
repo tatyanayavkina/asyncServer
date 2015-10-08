@@ -2,6 +2,7 @@ package server;
 
 import handlers.ChannelAndBuffersContainer;
 import handlers.ReadHandler;
+import handlers.ServerMessageWriteHandler;
 import handlers.WriteHandler;
 import utils.*;
 
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -81,17 +83,18 @@ public class ServerProcessor implements ChatProcessor{
     }
 
     private void sendMessage(Message message ){
-        ArrayList<Message> messageArrayList = new ArrayList<Message>();
+        List<Message> messageArrayList = new ArrayList<Message>();
         messageArrayList.add( message );
         //send message to all connected clients
         Iterable<ChannelAndBuffersContainer> channelAndBuffersContainers = this.tcpServer.getAllConnections();
         for ( ChannelAndBuffersContainer channelAndBuffersContainer : channelAndBuffersContainers ) {
             synchronized(channelAndBuffersContainer){
-                if ( channelAndBuffersContainer. getReadyToWrite() ){
-                    channelAndBuffersContainer.setLastSendedMessageIndex( message.getId() );
+                if ( channelAndBuffersContainer.getReadyToWrite() ){
+                    channelAndBuffersContainer.setReadyToWrite( false );
+                    channelAndBuffersContainer.setLastSendMessageIndex(message.getId());
                     ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( messageArrayList );
                     channelAndBuffersContainer.setWriteBuffer( writeBuffer );
-                    channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler() );
+                    channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new ServerMessageWriteHandler( this.messageList ) );
                 }
 
             }
@@ -112,11 +115,11 @@ public class ServerProcessor implements ChatProcessor{
     }
 
     public void handleInputMessage(String messageListString, ChannelAndBuffersContainer channelAndBuffersContainer){
-        ArrayList<Message> messageArrayList = JsonConverter.fromJsonToList(messageListString);
+        List<Message> messageArrayList = JsonConverter.fromJsonToList(messageListString);
         for( Message message: messageArrayList ){
             int id = messageCounter.incrementAndGet();
             message.setId(id);
-            storeMessage(message);
+            storeMessage( message );
             sendMessage( message );
             System.out.println("message" + message.toOutStr());
         }

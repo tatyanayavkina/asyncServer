@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 23.09.2015.
@@ -71,7 +72,7 @@ public class ClientProcessor implements ChatProcessor{
     }
 
     public void handleInputMessage(String messageListString, ChannelAndBuffersContainer channelAndBuffersContainer){
-        ArrayList<Message> messageList = JsonConverter.fromJsonToList(messageListString);
+        List<Message> messageList = JsonConverter.fromJsonToList(messageListString);
         for( Message message: messageList ){
             // if we are not message author then print it to console
             if( !username.equals( message.getAuthor())){

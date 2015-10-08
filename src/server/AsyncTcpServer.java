@@ -46,6 +46,7 @@ public class AsyncTcpServer {
         synchronized (connectionsMap){
             int instance = connectionsMap.getNextId();
             channelAndBuffersContainer.setInstance(instance);
+            channelAndBuffersContainer.setReadyToWrite(true);
             connectionsMap.pushConnection( instance, channelAndBuffersContainer);
         }
     }

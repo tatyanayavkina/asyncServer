@@ -8,7 +8,6 @@ import java.nio.channels.CompletionHandler;
  * Created on 15.09.2015.
  */
 public class AsyncClientConnectionHandler implements CompletionHandler<Void, ChannelAndBuffersContainer>{
-//    private UserInputHandler inputHandler;
     private final ClientProcessor clientProcessor;
 
     public AsyncClientConnectionHandler(ClientProcessor clientProcessor){

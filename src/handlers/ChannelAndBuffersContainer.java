@@ -2,7 +2,6 @@ package handlers;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created on 15.09.2015.
@@ -13,7 +12,7 @@ public class ChannelAndBuffersContainer {
     private ByteBuffer readBuffer;
     private ByteBuffer writeBuffer;
     private boolean readyToWrite;
-    private int lastSendedMessageIndex;
+    private int lastSendMessageIndex;
 
     private AsynchronousSocketChannel channel;
 
@@ -45,8 +44,8 @@ public class ChannelAndBuffersContainer {
         this.readyToWrite = readyToWrite;
     }
 
-    public void setLastSendedMessageIndex(int lastSendedMessageIndex){
-        this.lastSendedMessageIndex = lastSendedMessageIndex;
+    public void setLastSendMessageIndex(int lastSendMessageIndex){
+        this.lastSendMessageIndex = lastSendMessageIndex;
     }
 
     public AsynchronousSocketChannel getChannel()
@@ -73,8 +72,8 @@ public class ChannelAndBuffersContainer {
         return readyToWrite;
     }
 
-    public int getLastSendedMessageIndex(){
-        return lastSendedMessageIndex;
+    public int getLastSendMessageIndex(){
+        return lastSendMessageIndex;
     }
 
     public ByteBuffer getReadSizeBuffer(){

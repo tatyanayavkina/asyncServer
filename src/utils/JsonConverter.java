@@ -3,7 +3,8 @@ package utils;
 import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -21,8 +22,8 @@ public class JsonConverter {
         return gson.fromJson(str, T);
     }
 
-    public static ArrayList<Message> fromJsonToList(String str){
-        Type listType = new TypeToken<ArrayList<Message>>() {}.getType();
+    public static List<Message> fromJsonToList(String str){
+        Type listType = new TypeToken<List<Message>>() {}.getType();
         final Gson gson = new Gson();
         return gson.fromJson(str, listType);
     }

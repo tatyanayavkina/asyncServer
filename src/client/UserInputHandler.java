@@ -2,7 +2,6 @@ package client;
 
 import handlers.WriteHandler;
 import handlers.ChannelAndBuffersContainer;
-import utils.JsonConverter;
 import utils.Message;
 import utils.MessageWriter;
 
@@ -11,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 18.09.2015.
@@ -52,7 +52,7 @@ public class UserInputHandler implements Runnable {
                     continue;
                 }
                 Message message = new Message(author, IP, ln);
-                ArrayList<Message> messageList = new ArrayList<Message>();
+                List<Message> messageList = new ArrayList<Message>();
                 messageList.add( message );
                 ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( messageList );
                 channelAndBuffersContainer.setWriteBuffer( writeBuffer );

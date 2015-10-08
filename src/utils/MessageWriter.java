@@ -3,13 +3,14 @@ package utils;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 23.09.2015.
  */
 public class MessageWriter {
 
-    public static ByteBuffer createWriteBuffer(ArrayList<Message> messagesList){
+    public static ByteBuffer createWriteBuffer (List<Message> messagesList){
         String messagesListString = JsonConverter.toJson( messagesList );
         return createWriteBuffer( messagesListString );
     }
