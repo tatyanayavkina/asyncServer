@@ -23,7 +23,9 @@ public class ServerMessageWriteHandler implements CompletionHandler<Integer, Cha
         }
         channelAndBuffersContainer.setWriteBuffer(null);
 
-        processor.sendMessageList( channelAndBuffersContainer, this );
+        synchronized ( channelAndBuffersContainer ){
+            processor.sendMessageList( channelAndBuffersContainer, this );
+        }
     }
 
     @Override

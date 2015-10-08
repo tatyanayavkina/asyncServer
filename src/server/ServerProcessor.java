@@ -116,8 +116,6 @@ public class ServerProcessor implements ChatProcessor{
     }
 
     private void sendMessage(Message message){
-        List<Message> messageArrayList = new ArrayList<Message>();
-        messageArrayList.add( message );
         //send message to all connected clients
         Iterable<ChannelAndBuffersContainer> channelAndBuffersContainers = this.tcpServer.getAllConnections();
         for ( ChannelAndBuffersContainer channelAndBuffersContainer : channelAndBuffersContainers ) {
