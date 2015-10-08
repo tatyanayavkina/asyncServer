@@ -71,6 +71,39 @@ public class ServerProcessor implements ChatProcessor{
         channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler());
     }
 
+    private List<Message> getSubMessagesList( int lastSendMessageIndex ){
+        List<Message> subMessageList = null;
+        synchronized (messageList){
+            if ( !messageList.isEmpty() ){
+                int messageListSize = messageList.size();
+
+                for( Message message: messageList ){
+                    int index = messageList.indexOf( message );
+                    if( message.getId() ==  lastSendMessageIndex && ( index + 1 != messageListSize ) ){
+                        subMessageList =  messageList.subList( index + 1, messageListSize );
+                    }
+                }
+            }
+        }
+
+        return subMessageList;
+    }
+
+    public void sendMessageList (ChannelAndBuffersContainer channelAndBuffersContainer, ServerMessageWriteHandler writeHandler){
+            int lastSendMessageIndex = channelAndBuffersContainer.getLastSendMessageIndex();
+            List<Message> subMessageList = getSubMessagesList( lastSendMessageIndex );
+            if( subMessageList == null ){
+                channelAndBuffersContainer.setReadyToWrite( true );
+                return;
+            }
+            Message lastSendMessage = subMessageList.get( subMessageList.size() - 1);
+
+            channelAndBuffersContainer.setLastSendMessageIndex( lastSendMessage.getId() );
+            ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( subMessageList );
+            channelAndBuffersContainer.setWriteBuffer( writeBuffer );
+            channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, writeHandler);
+    }
+
 
     private void storeMessage( Message message ){
         synchronized ( messageList ){
@@ -82,7 +115,7 @@ public class ServerProcessor implements ChatProcessor{
         }
     }
 
-    private void sendMessage(Message message ){
+    private void sendMessage(Message message){
         List<Message> messageArrayList = new ArrayList<Message>();
         messageArrayList.add( message );
         //send message to all connected clients
@@ -90,13 +123,12 @@ public class ServerProcessor implements ChatProcessor{
         for ( ChannelAndBuffersContainer channelAndBuffersContainer : channelAndBuffersContainers ) {
             synchronized(channelAndBuffersContainer){
                 if ( channelAndBuffersContainer.getReadyToWrite() ){
-                    channelAndBuffersContainer.setReadyToWrite( false );
-                    channelAndBuffersContainer.setLastSendMessageIndex(message.getId());
-                    ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( messageArrayList );
-                    channelAndBuffersContainer.setWriteBuffer( writeBuffer );
-                    channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new ServerMessageWriteHandler( this.messageList ) );
+                    channelAndBuffersContainer.setReadyToWrite(false);
+                    if ( channelAndBuffersContainer.getLastSendMessageIndex() == 0){
+                        channelAndBuffersContainer.setLastSendMessageIndex( message.getId() - 1 );
+                    }
+                    sendMessageList( channelAndBuffersContainer, new ServerMessageWriteHandler( this ));
                 }
-
             }
         }
     }
