@@ -28,7 +28,7 @@ public class AsyncTcpClient {
 
     public void connect(){
         ChannelAndBuffersContainer channelAndBuffersContainer = new ChannelAndBuffersContainer( );
-        channelAndBuffersContainer.setInstance(0);
+        channelAndBuffersContainer.setId(0);
         channelAndBuffersContainer.initChannel( channel );
         channel.connect( new InetSocketAddress( host, port ), channelAndBuffersContainer, new AsyncClientConnectionHandler( this.clientProcessor ) );
     }

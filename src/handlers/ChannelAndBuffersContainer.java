@@ -7,7 +7,7 @@ import java.nio.channels.AsynchronousSocketChannel;
  * Created on 15.09.2015.
  */
 public class ChannelAndBuffersContainer {
-    private  int instance;
+    private  int id;
     private final ByteBuffer readSizeBuffer;
     private ByteBuffer readBuffer;
     private ByteBuffer writeBuffer;
@@ -21,8 +21,8 @@ public class ChannelAndBuffersContainer {
         this.readSizeBuffer = ByteBuffer.allocate(4);
     }
 
-    public void setInstance(int instance){
-        this.instance = instance;
+    public void setId(int id){
+        this.id = id;
     }
 
     public ChannelAndBuffersContainer initChannel(AsynchronousSocketChannel asc)
@@ -63,9 +63,9 @@ public class ChannelAndBuffersContainer {
         return writeBuffer;
     }
 
-    public int getInstance()
+    public int getId()
     {
-        return instance;
+        return id;
     }
 
     public boolean getReadyToWrite(){

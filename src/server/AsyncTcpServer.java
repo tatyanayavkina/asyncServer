@@ -45,7 +45,7 @@ public class AsyncTcpServer {
     public void addConnection (ChannelAndBuffersContainer channelAndBuffersContainer){
         synchronized (connectionsMap){
             int instance = connectionsMap.getNextId();
-            channelAndBuffersContainer.setInstance( instance );
+            channelAndBuffersContainer.setId(instance);
             channelAndBuffersContainer.setReadyToWrite( true );
             channelAndBuffersContainer.setLastSendMessageIndex( 0 );
             connectionsMap.pushConnection( instance, channelAndBuffersContainer );
@@ -54,7 +54,7 @@ public class AsyncTcpServer {
 
     public void removeConnection (ChannelAndBuffersContainer channelAndBuffersContainer){
         synchronized (connectionsMap){
-            connectionsMap.remove(channelAndBuffersContainer.getInstance());
+            connectionsMap.remove(channelAndBuffersContainer.getId());
         }
     }
 

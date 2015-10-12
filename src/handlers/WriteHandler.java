@@ -19,6 +19,6 @@ public class WriteHandler implements CompletionHandler<Integer, ChannelAndBuffer
     @Override
     public void failed(Throwable exc, ChannelAndBuffersContainer chanelState)
     {
-        System.out.printf("Error while writing to client #%02d!%n", chanelState.getInstance());
+        System.out.printf("Error while writing to client #%02d!%n", chanelState.getId());
     }
 }
