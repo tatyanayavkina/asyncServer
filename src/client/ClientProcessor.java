@@ -8,9 +8,9 @@ import utils.*;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.AsynchronousSocketChannel;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * Created on 23.09.2015.
@@ -72,9 +72,10 @@ public class ClientProcessor implements ChatProcessor{
     }
 
     public void handleInputMessage(String messageListString, ChannelAndBuffersContainer channelAndBuffersContainer){
-        List<Message> messageList = JsonConverter.fromJsonToList(messageListString);
-        for( Message message: messageList ){
+        SortedMap<Integer,Message> messageMap = JsonConverter.fromJsonToMap(messageListString);
+        for( Map.Entry<Integer,Message> entry : messageMap.entrySet() ){
             // if we are not message author then print it to console
+            Message message = entry.getValue();
             if( !username.equals( message.getAuthor())){
                 System.out.println("message" + message.toOutStr());
             }

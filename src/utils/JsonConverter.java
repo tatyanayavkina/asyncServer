@@ -3,7 +3,7 @@ package utils;
 import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
-import java.util.List;
+import java.util.SortedMap;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -22,9 +22,9 @@ public class JsonConverter {
         return gson.fromJson(str, T);
     }
 
-    public static List<Message> fromJsonToList(String str){
-        Type listType = new TypeToken<List<Message>>() {}.getType();
+    public static SortedMap<Integer,Message> fromJsonToMap(String str){
+        Type mapType = new TypeToken<SortedMap<Integer,Message>>() {}.getType();
         final Gson gson = new Gson();
-        return gson.fromJson(str, listType);
+        return gson.fromJson(str, mapType);
     }
 }

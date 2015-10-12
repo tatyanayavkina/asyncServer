@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Created on 18.09.2015.
@@ -52,9 +54,9 @@ public class UserInputHandler implements Runnable {
                     continue;
                 }
                 Message message = new Message(author, IP, ln);
-                List<Message> messageList = new ArrayList<Message>();
-                messageList.add( message );
-                ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( messageList );
+                SortedMap<Integer,Message> messageMap = new TreeMap<Integer, Message>();
+                messageMap.put( 1, message );
+                ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( messageMap );
                 channelAndBuffersContainer.setWriteBuffer( writeBuffer );
                 channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, new WriteHandler() );
             }

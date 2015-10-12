@@ -2,16 +2,15 @@ package utils;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.SortedMap;
 
 /**
  * Created on 23.09.2015.
  */
 public class MessageWriter {
 
-    public static ByteBuffer createWriteBuffer (List<Message> messagesList){
-        String messagesListString = JsonConverter.toJson( messagesList );
+    public static ByteBuffer createWriteBuffer (SortedMap<Integer,Message> messagesMap){
+        String messagesListString = JsonConverter.toJson( messagesMap );
         return createWriteBuffer( messagesListString );
     }
 
