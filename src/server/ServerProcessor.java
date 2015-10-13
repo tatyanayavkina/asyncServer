@@ -80,9 +80,8 @@ public class ServerProcessor implements ChatProcessor{
             channelAndBuffersContainer.setReadyToWrite( true );
             return;
         }
-        Message lastSendMessage = subMessageMap.get( subMessageMap.size() - 1);
 
-        channelAndBuffersContainer.setLastSendMessageIndex( lastSendMessage.getId() );
+        channelAndBuffersContainer.setLastSendMessageIndex( subMessageMap.lastKey() );
         ByteBuffer writeBuffer = MessageWriter.createWriteBuffer( subMessageMap );
         channelAndBuffersContainer.setWriteBuffer( writeBuffer );
         channelAndBuffersContainer.getChannel().write( channelAndBuffersContainer.getWriteBuffer(), channelAndBuffersContainer, writeHandler);
