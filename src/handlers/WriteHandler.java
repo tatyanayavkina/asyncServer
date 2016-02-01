@@ -2,9 +2,6 @@ package handlers;
 
 import java.nio.channels.CompletionHandler;
 
-/**
- * Created on 15.09.2015.
- */
 public class WriteHandler implements CompletionHandler<Integer, ChannelAndBuffersContainer> {
 
     @Override
