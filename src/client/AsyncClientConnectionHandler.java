@@ -4,9 +4,6 @@ import handlers.ChannelAndBuffersContainer;
 
 import java.nio.channels.CompletionHandler;
 
-/**
- * Created on 15.09.2015.
- */
 public class AsyncClientConnectionHandler implements CompletionHandler<Void, ChannelAndBuffersContainer>{
     private final ClientProcessor clientProcessor;
 
