@@ -7,9 +7,6 @@ import java.util.SortedMap;
 
 import com.google.gson.reflect.TypeToken;
 
-/**
- * Created on 24.09.2015.
- */
 public class JsonConverter {
 
     public static String toJson(Object model){
