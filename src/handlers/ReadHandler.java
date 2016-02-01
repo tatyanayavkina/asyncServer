@@ -7,9 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.CompletionHandler;
 import java.nio.charset.StandardCharsets;
 
-/**
- * Created on 15.09.2015.
- */
+
 public class ReadHandler implements CompletionHandler<Integer, ChannelAndBuffersContainer> {
     private final ChatProcessor processor;
     private boolean isAuthorized;
