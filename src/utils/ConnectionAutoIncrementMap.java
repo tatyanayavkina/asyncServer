@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created on 22.09.2015.
- */
 public class ConnectionAutoIncrementMap extends HashMap<Integer, ChannelAndBuffersContainer> {
     public int connectionCounter;
 
