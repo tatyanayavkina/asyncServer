@@ -6,9 +6,6 @@ import utils.XMLReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-/**
- * Created on 15.09.2015.
- */
 public class StartServer {
 
     public static void main(String[] args) {
