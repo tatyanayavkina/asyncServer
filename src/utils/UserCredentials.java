@@ -1,8 +1,5 @@
 package utils;
 
-/**
- * Created on 24.09.2015.
- */
 public class UserCredentials {
     private String name;
     private String password;
