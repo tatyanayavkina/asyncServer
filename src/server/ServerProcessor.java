@@ -11,9 +11,6 @@ import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Created on 21.09.2015.
- */
 public class ServerProcessor implements ChatProcessor{
     private HashMap<String,String> users;
     private final int messageStoreLimit;
