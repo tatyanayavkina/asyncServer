@@ -1,8 +1,5 @@
 package utils;
 
-/**
- * Created on 04.09.2015.
- */
 public class UtilityMessage{
     private StatusCodes code;
 
