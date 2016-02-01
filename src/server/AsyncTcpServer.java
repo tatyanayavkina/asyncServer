@@ -9,9 +9,6 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.util.concurrent.Executors;
 
-/**
- * Created on 15.09.2015.
- */
 public class AsyncTcpServer {
     private ServerProcessor serverProcessor;
     private final String host;
