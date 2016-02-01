@@ -4,9 +4,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.SortedMap;
 
-/**
- * Created on 23.09.2015.
- */
 public class MessageWriter {
 
     public static ByteBuffer createWriteBuffer (SortedMap<Integer,Message> messagesMap){
