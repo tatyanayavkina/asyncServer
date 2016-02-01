@@ -3,9 +3,6 @@ package handlers;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 
-/**
- * Created on 15.09.2015.
- */
 public class ChannelAndBuffersContainer {
     private  int id;
     private final ByteBuffer readSizeBuffer;
