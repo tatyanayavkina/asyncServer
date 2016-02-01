@@ -12,9 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
-/**
- * Created on 23.09.2015.
- */
 public class ClientProcessor implements ChatProcessor{
     private String username;
     private String password;
