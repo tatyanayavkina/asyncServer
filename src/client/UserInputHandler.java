@@ -14,9 +14,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-/**
- * Created on 18.09.2015.
- */
+
 public class UserInputHandler implements Runnable {
     private ClientProcessor clientProcessor;
     private ChannelAndBuffersContainer channelAndBuffersContainer;
