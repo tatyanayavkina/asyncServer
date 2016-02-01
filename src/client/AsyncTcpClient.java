@@ -8,9 +8,6 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.concurrent.Executors;
 
-/**
- * Created on 15.09.2015.
- */
 public class AsyncTcpClient {
     private final int port;
     private final String host;
