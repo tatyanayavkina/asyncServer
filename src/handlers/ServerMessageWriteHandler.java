@@ -5,9 +5,6 @@ import server.ServerProcessor;
 import java.nio.channels.CompletionHandler;
 
 
-/**
- * Created on 06.10.2015.
- */
 public class ServerMessageWriteHandler implements CompletionHandler<Integer, ChannelAndBuffersContainer> {
     private ServerProcessor processor;
 
