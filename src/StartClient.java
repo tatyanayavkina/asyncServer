@@ -3,9 +3,6 @@ import client.ClientProcessor;
 import java.io.IOException;
 import java.util.Scanner;
 
-/**
- * Created on 17.09.2015.
- */
 public class StartClient {
     public static void main(String[] args) {
         System.out.println("Enter your name, please");
